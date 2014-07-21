@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:elasticsearch="http://www.pilato.fr/schema/elasticsearch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	      http://www.springframework.org/schema/beans/spring-beans.xsd 
+	      http://www.springframework.org/schema/context
+	      http://www.springframework.org/schema/context/spring-context.xsd
+	      http://www.pilato.fr/schema/elasticsearch http://www.pilato.fr/schema/elasticsearch/elasticsearch-0.3.xsd">
+
+	<bean id="mongoDao" class="com.dao.MongoDao">
+		<constructor-arg index="0">
+			<value>127.0.0.1</value>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<value>27017</value>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<value>scholar</value>
+		</constructor-arg>
+	</bean>
+	
+	<elasticsearch:client id="esClient" esNodes="127.0.0.1:9300" />
+
+	<context:component-scan base-package="com" />
+
+	<bean id="springContextUtil" class="com.utils.spring.SpringContextUtil"
+		scope="singleton" />
+
+</beans>  
