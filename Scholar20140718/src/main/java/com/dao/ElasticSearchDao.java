@@ -1,6 +1,7 @@
 package com.dao;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -85,7 +86,7 @@ public class ElasticSearchDao {
 				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
 				.actionGet();
 		return respons;
-	}	
+	}
 
 	/**
 	 * 对列表进行重新排序
@@ -95,7 +96,8 @@ public class ElasticSearchDao {
 	 * @param size
 	 * @return
 	 */
-	public SearchResponse findByPageReScore(String query, long from, long size) {
+	public SearchResponse findByScoreDefault(String query,
+			Map<String, String> terms, long from, long size) {
 		String script = "doc.score * doc['rank'].value";
 		QueryBuilder qb = QueryBuilders.queryString(query);
 		SearchResponse respons = client
@@ -121,11 +123,79 @@ public class ElasticSearchDao {
 	 * @param size
 	 * @return
 	 */
-	public SearchResponse findReScoreWithFilterByTerm(String query, long from,
-			long size) {
+	public SearchResponse findByScoreAType(String query,
+			Map<String, String> terms, long from, long size) {
+		String script = "doc['atype'].value";
+		QueryBuilder qb = QueryBuilders.queryString(query);
+		SearchResponse respons = client
+				.prepareSearch("authorrank")
+				.setTypes("authorrank")
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.setQuery(qb)
+				// .addSort("rank", SortOrder.DESC)
+				.addSort(
+						SortBuilders.scriptSort(script, "number").lang("mvel")
+								.order(SortOrder.DESC))
+				.setFrom(TypeCastUtil.castLong2Integer(from))
+				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
+				.actionGet();
+		return respons;
+	}
+
+	/**
+	 * 对列表进行重新排序
+	 * 
+	 * @param query
+	 * @param from
+	 * @param size
+	 * @return
+	 */
+	public SearchResponse findByScoreYear(String query,
+			Map<String, String> terms, long from, long size) {
+		String script = "doc['year'].value";
+		QueryBuilder qb = QueryBuilders.queryString(query);
+		SearchResponse respons = client
+				.prepareSearch("authorrank")
+				.setTypes("authorrank")
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.setQuery(qb)
+				// .addSort("rank", SortOrder.DESC)
+				.addSort(
+						SortBuilders.scriptSort(script, "number").lang("mvel")
+								.order(SortOrder.DESC))
+				.setFrom(TypeCastUtil.castLong2Integer(from))
+				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
+				.actionGet();
+		return respons;
+	}
+
+	/**
+	 * 创建过滤查询条件
+	 * 
+	 * @param terms
+	 * @return
+	 */
+	private FilterBuilder buildFilters(Map<String, String> terms) {
+		FilterBuilder filter = null;
+		for (String term : terms.keySet()) {
+			filter = FilterBuilders.andFilter(FilterBuilders.termFilter(term,
+					terms.get(term)));
+		}
+		return filter;
+	}
+
+	/**
+	 * 对列表进行重新排序
+	 * 
+	 * @param query
+	 * @param from
+	 * @param size
+	 * @return
+	 */
+	public SearchResponse findReScoreWithFilterByTerm(String query,
+			Map<String, String> terms, long from, long size) {
 		String script = "doc.score * doc['rank'].value";
-		FilterBuilder filter = FilterBuilders.andFilter(FilterBuilders
-				.termFilter("location", "microsoft"));
+		FilterBuilder filter = buildFilters(terms);
 		QueryBuilder qb = QueryBuilders.queryString(query);
 		SearchResponse respons = client
 				.prepareSearch("authorrank")

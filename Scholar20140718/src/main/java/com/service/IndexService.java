@@ -26,6 +26,10 @@ public class IndexService {
 	@Resource
 	ScholarSpider sservice;
 
+	/**
+	 * 向elasticsearch添加所有用户的索引
+	 * 
+	 */
 	public void updateIndex() {
 		AuthorRank authorRank;
 		int i = 0;
@@ -34,23 +38,41 @@ public class IndexService {
 			Author author = (Author) JSONObject.toJavaObject(
 					(JSONObject) JSONObject.toJSON(authors.get(aid)),
 					Author.class);
-			if (author.getAid() != null && author.getIsYoungEnough()) {
-				authorRank = aservice.getAuthorRank(author);
+			if (author.getAuthorPaper() == null) {
 				author = aservice.createAuthorPaper(author);
+				mservice.updateAuthorPaper(aid, author);
+			}
+			if (author.getAid() != null) {
+				authorRank = aservice.getAuthorRank(author);
 				try {
-					service.putAuthorRankIntoIndex(authorRank);
-					//mservice.updateAuthorPaper(aid, author);
+					if (authorRank.getYear() >= 2007) {
+						service.putAuthorRankIntoIndex(authorRank);
+						author.setIsYoungEnough(true);
+						mservice.updateAuthorData(author.getAid(),
+								"isYoungEnough", author);
+					} else {
+						service.putAuthorRankIntoIndex(authorRank);
+						author.setIsYoungEnough(false);
+						mservice.updateAuthorData(author.getAid(),
+								"isYoungEnough", author);
+					}
+					// mservice.updateAuthorPaper(aid, author);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-//			if(i>=500)
-//				break;
-			System.out.println(i++);
+			// if(i>=10)
+			// break;
+			System.out.println((i++) + ":" + aid);
 		}
 	}
 
+	/**
+	 * 根据用户的ID更新用户的论文等级
+	 * 
+	 * @param aid
+	 */
 	public void updateAuthorPaper(String aid) {
 
 		Author author = aservice.createAuthorPaper(aid);
@@ -64,7 +86,7 @@ public class IndexService {
 		IndexService index = (IndexService) SpringBeanFactory
 				.getBean("indexService");
 		index.updateIndex();
-		//index.updateAuthorPaper("pGsO6EkAAAAJ");
+		// index.updateAuthorPaper("pGsO6EkAAAAJ");
 	}
 
 }

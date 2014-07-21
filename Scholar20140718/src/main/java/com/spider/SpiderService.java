@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.DBObject;
 import com.pojo.Author;
 import com.pojo.Paper;
+import com.service.AuthorService;
 import com.service.MongoService;
 import com.utils.IOUtil;
 import com.utils.spring.SpringBeanFactory;
@@ -23,6 +24,8 @@ public class SpiderService {
 	ScholarSpider spider;
 	@Resource
 	MongoService service;
+	@Resource
+	AuthorService aservice;
 
 	public void updatePapers() {
 		Map<String, DBObject> authors = service.getAllAuthor();
@@ -86,18 +89,57 @@ public class SpiderService {
 	}
 
 	public void getNewAuthors() throws IOException {
-		//Map<String, String> authors = spider.getSeniorUser("chinese");
+		// Map<String, String> authors = spider.getSeniorUser("chinese");
 		Map<String, String> authors = IOUtil.read2Map("d:/data.txt");
 		int i = 0;
 		for (String id : authors.keySet()) {
 			if (id != null) {
-				System.out.println((i++) + ":" + id);
+				Author _author;
 				if (service.findAuthor(id) == null) {
-					Author _author = spider.getAuthorDetail(id);
+					_author = spider.getAuthorDetail(id);
 					service.insertAuthor(_author);
+				} else {
+					_author = service.findAuthor(id);
+				}
+				if (_author.getPapers() != null) {
+					for (String pid : _author.getPapers()) {
+						if (service.findPaper(pid) == null) {
+							Paper paper = spider.getPaperDetail(
+									_author.getAid(), pid);
+							if (paper != null)
+								service.insertPaper(paper);
+						}
+						System.out.println((i) + "_" + _author.getAid() + ":"
+								+ pid);
+					}
 				}
 			}
+			System.out.println((i++) + ":" + id);
 		}
+	}
+
+	public void insertNewAuthor(String aid) {
+		Author _author;
+		if (service.findAuthor(aid) == null) {
+			_author = spider.getAuthorDetail(aid);
+		} else {
+			_author = service.findAuthor(aid);
+
+		}
+		if (_author.getPapers() != null) {
+			for (String pid : _author.getPapers()) {
+				if (service.findPaper(pid) == null) {
+					Paper paper = spider.getPaperDetail(_author.getAid(), pid);
+					if (paper != null)
+						service.insertPaper(paper);
+				}
+				System.out.println(_author.getAid() + ":" + pid);
+			}
+		}
+		// 添加用户的论文评级
+		_author = aservice.createAuthorPaper(_author);
+
+		service.insertAuthor(_author);
 	}
 
 	public static void main(String[] args) {
@@ -111,5 +153,6 @@ public class SpiderService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 }

@@ -10,6 +10,12 @@ public class AuthorRank {
 	private String aid;
 
 	private String tags;
+		
+	//作者的A类文章数
+	private int apapers;
+	
+	//作者的第一篇文章年份
+	private int year;
 
 	private List<Paper> papers;
 	
@@ -55,6 +61,22 @@ public class AuthorRank {
 
 	public void setRank(float rank) {
 		this.rank = rank;
+	}
+
+	public int getApapers() {
+		return apapers;
+	}
+
+	public void setApapers(int apapers) {
+		this.apapers = apapers;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
 	}
 	
 }

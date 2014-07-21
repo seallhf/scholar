@@ -1,6 +1,9 @@
 package com.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -28,58 +31,7 @@ public class AuthorService {
 	public Author createAuthorPaper(String aid) {
 		Author author = mongoService.findAuthor(aid);
 		if (author != null) {
-			List<String> paperList = author.getPapers();
-			AuthorPaper authorPaper = (AuthorPaper) SpringBeanFactory
-					.getBean("authorPaper");
-			int aconf = 0, bconf = 0, cconf = 0;
-			int ajounal = 0, bjounal = 0, cjounal = 0;
-			if (paperList != null)
-				for (String pid : paperList) {
-					Paper paper = mongoService.findPaper(pid);
-					if (paper != null) {
-						String tag = paper.getTag();
-						if (tag != null && !tag.equals("")) {
-							String[] lines = tag.split("\t");
-							String grade, type;
-							if (lines.length > 4) {
-								// 论文的等级
-								grade = tag.split("\t")[0];
-								// 论文的类型
-								type = tag.split("\t")[4];
-							} else {
-								// System.out.println(tag);
-								grade = tag.split("\t")[0];
-								// 论文的类型
-								type = tag.split("\t")[3];
-
-							}
-							if (type.equals("期刊")) {
-								if (grade.equals("A"))
-									ajounal++;
-								else if (grade.equals("B"))
-									bjounal++;
-								else if (grade.equals("C"))
-									cjounal++;
-							} else if (type.equals("会议")) {
-								if (grade.equals("A"))
-									aconf++;
-								else if (grade.equals("B"))
-									bconf++;
-								else if (grade.equals("C"))
-									cconf++;
-							}
-						}
-					}
-				}
-			authorPaper.setAconf(aconf);
-			authorPaper.setAjounal(ajounal);
-			authorPaper.setBconf(bconf);
-			authorPaper.setBjounal(bjounal);
-			authorPaper.setCconf(cconf);
-			authorPaper.setCjounal(cjounal);
-			authorPaper.setAid(aid);
-			author.setAuthorPaper(authorPaper);
-			return author;
+			return createAuthorPaper(author);
 		}
 		return null;
 	}
@@ -149,23 +101,7 @@ public class AuthorService {
 	public AuthorRank getAuthorRank(String aid) {
 		Author author = mongoService.findAuthor(aid);
 		if (author != null) {
-			List<String> paperList = author.getPapers();
-			AuthorRank authorRank = (AuthorRank) SpringBeanFactory
-					.getBean("authorRank");
-			List<Paper> papers = new ArrayList<Paper>();
-			if (paperList != null)
-				for (String pid : paperList) {
-					Paper paper = mongoService.findPaper(pid);
-					paper.setDate("1000/11/11");
-					if (paper != null) {
-						papers.add(paper);
-					}
-				}
-			authorRank.setPapers(papers);
-			authorRank.setAid(aid);
-			authorRank.setTags(author.getTags());
-			authorRank.setLocation(author.getCollege());
-			return authorRank;
+			return getAuthorRank(author);
 		}
 		return null;
 	}
@@ -177,18 +113,52 @@ public class AuthorService {
 		List<Paper> papers = new ArrayList<Paper>();
 		if (paperList != null)
 			for (String pid : paperList) {
-				Paper paper = mongoService.findPaper(pid);
-				paper.setDate("1000/11/11");
+				Paper paper = mongoService.findPaper(pid);					
 				if (paper != null) {
+					paper.setDate("1000/11/11");
 					papers.add(paper);
 				}
 			}
+		if (author.getAuthorPaper() != null) {
+			authorRank.setApapers(author.getAuthorPaper().getAconf()
+					+ author.getAuthorPaper().getAjounal());
+			authorRank.setRank(caculateRank(author));
+		} else {
+			authorRank.setApapers(0);
+			authorRank.setRank(0f);
+		}
+		authorRank.setYear(caculateFirstYear(author));
 		authorRank.setPapers(papers);
 		authorRank.setAid(author.getAid());
 		authorRank.setTags(author.getTags());
 		authorRank.setLocation(author.getCollege());
-		authorRank.setRank(caculateRank(author));
+
 		return authorRank;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private int caculateFirstYear(Author author) {
+		List<Integer> list = new ArrayList<Integer>();
+		if (author.getPapers() != null) {
+			for (String pid : author.getPapers()) {
+				Paper paper = mongoService.findPaper(pid);
+				if (paper != null && paper.getDate() != null) {
+					String years = paper.getDate();
+					list.add(Integer.parseInt(years.substring(0, 4)));
+				}
+			}
+			Collections.sort(list, new Comparator() {
+				public int compare(Object o1, Object o2) {
+					return new Integer(String.valueOf(o1))
+							.compareTo(new Integer(String.valueOf(o2)));
+				}
+			});
+			Collections.sort(list);
+			if (list.size() > 0)
+				return list.get(0);
+			return 1900;
+		}
+		return 1900;
 	}
 
 	private float caculateRank(Author author) {
@@ -204,5 +174,12 @@ public class AuthorService {
 				* (author.getAuthorPaper().getCconf() + author.getAuthorPaper()
 						.getCjounal());
 		return rank;
+	}
+
+	public static void main(String[] args) {
+		AuthorService a = (AuthorService) SpringBeanFactory
+				.getBean("authorService");
+		AuthorRank rank = a.getAuthorRank("xrRQNgEAAAAJ");
+		System.out.println(rank.getYear());
 	}
 }

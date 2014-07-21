@@ -8,11 +8,13 @@ import com.action.base.BaseAction;
 import com.pojo.Page;
 import com.service.MongoService;
 import com.service.PageService;
+import com.utils.spring.SpringBeanFactory;
 
 @SuppressWarnings("serial")
 public class SearchAction extends BaseAction {
 
 	private String query;
+	private String sortBy;
 
 	private int pno; // 查看的表单页数
 	private Page myPage;
@@ -40,7 +42,15 @@ public class SearchAction extends BaseAction {
 		this.query = query;
 	}
 
-	public String execute(){
+	public String getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
+	}
+
+	public String execute() {
 		if (query.equals(""))
 			return ERROR;
 		else {
@@ -48,15 +58,16 @@ public class SearchAction extends BaseAction {
 			if (pno == 0) {
 				pno = 1;
 			}
-			pageService.init(pno, query);
+			PageService pageService = (PageService) SpringBeanFactory
+					.getBean("pageService");
+			pageService.init(pno, query, "default");
 			myPage = pageService.getPage();
 			mylist = pageService.getPage().getList();
 			return SUCCESS;
 		}
 	}
-	
-	public String filterSearch()
-	{
+
+	public String filterSearch() {
 		if (query.equals(""))
 			return ERROR;
 		else {
@@ -64,7 +75,7 @@ public class SearchAction extends BaseAction {
 			if (pno == 0) {
 				pno = 1;
 			}
-			pageService.init(pno, query);
+			pageService.init(pno, query, "default");
 			myPage = pageService.getPage();
 			mylist = pageService.getPage().getList();
 			return SUCCESS;
@@ -83,7 +94,7 @@ public class SearchAction extends BaseAction {
 
 	public void setPno(int pno) {
 		this.pno = pno;
-	}	
+	}
 
 	public Page getMyPage() {
 		return myPage;

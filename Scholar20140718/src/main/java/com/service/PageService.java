@@ -19,14 +19,14 @@ public class PageService {
 	@Resource
 	private SearchService searchService;
 
-	public void init(int start, String query) {
+	public void init(int start, String query, String sortBy) {
 		page = new Page();
 		this.start = start;
 		if (page.getList() == null) {
-			List<?> list = searchService.getAuthors(query, start,
+			List<?> list = searchService.getAuthors(query, sortBy, start,
 					page.getPageSize());
 			page.setList(list);
-			allcounts = searchService.allcounts;
+			allcounts = searchService.getAllAuthorsCount(query);
 		}
 		setRowCount(); // 设置page的总数量
 		setTotalPage(); // 设置page的总页数
@@ -42,7 +42,7 @@ public class PageService {
 	 * 
 	 * @return
 	 */
-	public Page getPage() {		
+	public Page getPage() {
 		return page;
 
 	}

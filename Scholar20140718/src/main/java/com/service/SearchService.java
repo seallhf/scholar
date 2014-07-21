@@ -1,7 +1,9 @@
 package com.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -41,13 +43,23 @@ public class SearchService {
 	 * @param query
 	 * @return
 	 */
-	public List<Author> getAuthors(String query, long start, long length) {
+	public List<Author> getAuthors(String query,String sortBy, long start, long length) {
 		List<Author> list = new ArrayList<Author>();
-		SearchResponse response = eSService.findByPageReScore(query, (start - 1)
-				* length, length);
+		Map<String, String> terms = new HashMap<String, String>();
+		//terms.put("location", "student");
+		SearchResponse response;
+		if(sortBy.equals("defualt"))
+			response = eSService.findReScoreWithFilterByTerm(query,
+				terms, (start - 1) * length, length);
+		else if(sortBy.equals("aType"))
+			response = eSService.findReScoreWithFilterByTerm(query,
+					terms, (start - 1) * length, length);
+		else
+			response = eSService.findReScoreWithFilterByTerm(query,
+					terms, (start - 1) * length, length);
 		allcounts = response.getHits().totalHits();
 		for (SearchHit sh : response.getHits()) {
-			String id =(String)sh.getSource().get("aid");
+			String id = (String) sh.getSource().get("aid");
 			Author author = mongoService.findAuthor(id);
 			list.add(author);
 		}
