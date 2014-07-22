@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import org.apache.catalina.util.MD5Encoder;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,6 +26,7 @@ import com.pojo.Paper;
 import com.service.CCFComparation;
 import com.utils.HttpUtil;
 import com.utils.IOUtil;
+import com.utils.MD5Util;
 import com.utils.spring.SpringBeanFactory;
 
 @Service
@@ -183,25 +185,28 @@ public class ScholarSpider {
 	}
 
 	/**
-	 * 获得目标用户的全部
+	 * 获得目标用户的论文列表
 	 * 
 	 * @param page
 	 * @return
 	 */
-	public List<String> getAuthorPapers(Document page, String authorId) {
+	public Map<String, String> getAuthorPapers(Document page, String authorId) {
 		try {
-			List<String> lists = new ArrayList<String>();
+			Map<String, String> lists = new HashMap<String, String>();
 			Elements e = page.getElementsByAttributeValue("class",
 					"cit-table item");
 			for (Element paper : e) {
 				String line = paper.getElementsByTag("a").first().attr("href");
 				Pattern p = Pattern.compile(authorId + "\\:.+");
 				Matcher m = p.matcher(line);
+				String urlId = "";
 				if (m.find()) {
 					// System.out.println(m.group().replaceAll(id + "\\:", ""));
-					String paperId = m.group().replaceAll(authorId + "\\:", "");
-					lists.add(paperId);
+					urlId = m.group().replaceAll(authorId + "\\:", "");
 				}
+				String title = paper.getElementsByTag("a").first().text();
+				lists.put(MD5Util.MD5(title),
+						urlId);
 			}
 			int i = 2;
 			boolean stop = false;
@@ -220,11 +225,16 @@ public class ScholarSpider {
 								.attr("href");
 						Pattern p = Pattern.compile(authorId + "\\:.+");
 						Matcher m = p.matcher(line);
+						String urlId = "";
 						if (m.find()) {
-							String paperId = m.group().replaceAll(
-									authorId + "\\:", "");
-							lists.add(paperId);
+							// System.out.println(m.group().replaceAll(id +
+							// "\\:", ""));
+							urlId = m.group().replaceAll(authorId + "\\:", "");
+
 						}
+						String title = paper.getElementsByTag("a").first()
+								.text();
+						lists.put(MD5Util.MD5(title), urlId);
 					}
 				} else
 					stop = true;
@@ -374,7 +384,6 @@ public class ScholarSpider {
 			System.out.println("index exception！");
 			IOUtil.write2File("./error/error.html", html);
 		}
-		author.setIsYoungEnough(isYongEnough(page));
 		author.setPapers(getAuthorPapers(page, author.getAid()));
 		author.setCoAuthors(getCoAuthor(author.getAid()));
 		log.info("GET user <" + authorId + "> details!");
@@ -426,6 +435,13 @@ public class ScholarSpider {
 			return null;
 		}
 		try {
+			String id = MD5Util.MD5(paper.getTitle());
+			paper.setPid(id);
+		} catch (Exception e1) {
+			System.out.println("paperid exception！");
+			IOUtil.write2File("./error/error.html", html);
+		}
+		try {
 			paper.setUrl(page.getElementsByAttributeValue("id", "title")
 					.first().getElementsByTag("a").attr("href"));
 		} catch (Exception e1) {
@@ -440,7 +456,6 @@ public class ScholarSpider {
 			System.out.println("date exception！");
 			IOUtil.write2File("./error/error.html", html);
 		}
-		paper.setPid(paperId);
 		try {
 			paper.setAuthors(page
 					.getElementsByAttributeValue("class", "cit-dd").get(1)
@@ -483,8 +498,11 @@ public class ScholarSpider {
 
 	public static void main(String[] args) {
 		ScholarSpider spider = new ScholarSpider();
-
-		System.out.println(spider.getAuthorDetail("MXgWgmEAAAAJ"));
+		String id = spider.getPaperDetail("V_NdI3sAAAAJ", "u5HHmVD_uO8C")
+				.getPid();
+		System.out.println(id);
+		Author a = spider.getAuthorDetail("V_NdI3sAAAAJ");
+		System.out.println(a.getPapers().get(id));
 	}
 
 }

@@ -13,12 +13,13 @@ import org.springframework.stereotype.Service;
 
 import com.dao.ElasticSearchDao;
 import com.pojo.Author;
+import com.pojo.Authors;
 
 @Service
 public class SearchService {
 
 	@Resource
-	private ElasticSearchDao eSService;
+	private ElasticSearchDao esDao;
 
 	@Resource
 	private MongoService mongoService;
@@ -32,7 +33,7 @@ public class SearchService {
 	 * @return
 	 */
 	public long getAllAuthorsCount(String query) {
-		return eSService.findByPage(query, 0, 1).getHits().getTotalHits();
+		return esDao.findByPage(query, 0, 1).getHits().getTotalHits();
 	}
 
 	/**
@@ -43,24 +44,24 @@ public class SearchService {
 	 * @param query
 	 * @return
 	 */
-	public List<Author> getAuthors(String query,String sortBy, long start, long length) {
-		List<Author> list = new ArrayList<Author>();
+	public List<Authors> getAuthors(String query,String sortBy, long start, long length) {
+		List<Authors> list = new ArrayList<Authors>();
 		Map<String, String> terms = new HashMap<String, String>();
 		//terms.put("location", "student");
 		SearchResponse response;
 		if(sortBy.equals("apapers"))
-			response = eSService.findByScoreAType(query,
+			response = esDao.findByScoreAType(query,
 					terms, (start - 1) * length, length);
 		else if(sortBy.equals("year"))
-			response = eSService.findByScoreYear(query,
+			response = esDao.findByScoreYear(query,
 					terms, (start - 1) * length, length);
 		else
-			response = eSService.findReScoreWithFilterByTerm(query,
+			response = esDao.findReScoreWithFilterByTerm(query,
 				terms, (start - 1) * length, length);
 		allcounts = response.getHits().totalHits();
 		for (SearchHit sh : response.getHits()) {
 			String id = (String) sh.getSource().get("aid");
-			Author author = mongoService.findAuthor(id);
+			Authors author = mongoService.findAuthorN(id);
 			list.add(author);
 		}
 		return list;

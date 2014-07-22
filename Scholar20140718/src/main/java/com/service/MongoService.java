@@ -1,6 +1,5 @@
 package com.service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +13,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.Author;
 import com.pojo.AuthorRank;
+import com.pojo.Authors;
 import com.pojo.Paper;
-import com.utils.spring.SpringBeanFactory;
 
 @Service
 public class MongoService {
@@ -29,29 +28,6 @@ public class MongoService {
 
 	public final String INDEX = "authorrank";
 
-	public long getLastAuthorId() {
-		DBObject findMaxValue = this.mongoDao.findMaxValue(AUTHOR, "_id");
-		if (findMaxValue != null && findMaxValue.containsField("_id")) {
-			return Long.parseLong(findMaxValue.get("_id").toString());
-		} else {
-			return 0;
-		}
-	}
-
-	/**
-	 * 查找最后一次更新的时间
-	 * 
-	 * @return
-	 */
-	public Date getLastVideoUpdate() {
-		DBObject findMaxValue = this.mongoDao.findMaxValue(PAPER, "_id");
-		if (findMaxValue != null) {
-			Object object = findMaxValue.get("update_time");
-			return (Date) object;
-		} else
-			return null;
-	}
-
 	/**
 	 * 查找全部的作者
 	 * 
@@ -60,37 +36,28 @@ public class MongoService {
 	public Map<String, DBObject> getAllAuthor() {
 		return mongoDao.find(AUTHOR, "aid");
 	}
-
-	/**
-	 * 获得最大的值
-	 * 
-	 * @return
-	 */
-	public DBObject findMaxValue(String tableName, String column) {
-		return mongoDao.findMaxValue(tableName, column);
-
+	
+	public Map<String, DBObject> getAllPaper() {
+		return mongoDao.find(PAPER, "pid");
 	}
 
-	public Object findObject(String tableName, String column, String value) {
-		Map<String, String> query = new HashMap<String, String>();
-		query.put(column, value);
-		return mongoDao.find(tableName, query);
-	}
-
-	public Object findAllObject(String tableName, String column, String value) {
-		Map<String, String> query = new HashMap<String, String>();
-		query.put(column, value);
-		return mongoDao.find(tableName, query);
-	}
 
 	public Author findAuthor(String aid) {
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("aid", aid);
 		Author a = (Author) JSONObject.toJavaObject(
-				(JSONObject) JSONObject.toJSON(mongoDao.find(AUTHOR, query)),
+				(JSONObject) JSONObject.toJSON(mongoDao.find("author", query)),
 				Author.class);
 		return a;
-
+	}
+	
+	public Authors findAuthorN(String aid) {
+		Map<String, String> query = new HashMap<String, String>();
+		query.put("aid", aid);
+		Authors a = (Authors) JSONObject.toJavaObject(
+				(JSONObject) JSONObject.toJSON(mongoDao.find(AUTHOR, query)),
+				Authors.class);
+		return a;
 	}
 
 	public Paper findPaper(String pid) {
@@ -99,25 +66,16 @@ public class MongoService {
 		return (Paper) JSONObject.toJavaObject(
 				(JSONObject) JSONObject.toJSON(mongoDao.find(PAPER, query)),
 				Paper.class);
-
 	}
-
-	/**
-	 * 更新作者的文章统计
-	 * @param aid
-	 * @param newAuthor
-	 */
-	public void updateAuthorPaper(String aid, Author newAuthor) {
-		DBObject updateCondition = new BasicDBObject();
-		// where name='fox'
-		updateCondition.put("aid", aid);
-		DBObject updatedValue = new BasicDBObject();
-		updatedValue.put("authorPaper",
-				JSONObject.toJSON(newAuthor.getAuthorPaper()));
-		DBObject updatedSetValue = new BasicDBObject("$set", updatedValue);
-		mongoDao.update(AUTHOR, updateCondition, updatedSetValue);
+	
+	public Paper findPaperN(String pid) {
+		Map<String, String> query = new HashMap<String, String>();
+		query.put("pid", pid);
+		return (Paper) JSONObject.toJavaObject(
+				(JSONObject) JSONObject.toJSON(mongoDao.find("paper", query)),
+				Paper.class);
 	}
-
+	
 	/**
 	 * 更新作者的相应信息
 	 * @param aid
@@ -169,31 +127,18 @@ public class MongoService {
 	public void insertAuthor(Author author) {
 		// TODO Auto-generated method stub
 		if (author != null)
-			this.mongoDao.save(AUTHOR, (JSONObject) JSONObject.toJSON(author));
-	}
-
+			this.mongoDao.save("author", (JSONObject) JSONObject.toJSON(author));
+	}	
+	
 	public void insertPaper(Paper paper) {
 		// TODO Auto-generated method stub
 		if (paper != null)
-			this.mongoDao.save(PAPER, (JSONObject) JSONObject.toJSON(paper));
+			this.mongoDao.save("paper", (JSONObject) JSONObject.toJSON(paper));
 	}
 
 	public static void main(String[] args) throws Exception {
+		
+		//需要将authors的数据类型操作完全删除
 
-		MongoService mongo = (MongoService) SpringBeanFactory
-				.getBean("mongoService");
-		AuthorService aservice = (AuthorService) SpringBeanFactory
-				.getBean("authorService");
-		Map<String, DBObject> authors = mongo.getAllAuthor();
-		int i =0 ;
-		for (String aid : authors.keySet()) 
-		{
-			Author author = JSONObject.toJavaObject(
-					((JSONObject) JSONObject.toJSON(authors.get(aid))),
-					Author.class);
-			author = aservice.createAuthorPaper(author);
-			mongo.updateAuthorPaper(aid, author);
-			System.out.println((i++)+":"+aid);
-		}
 	}
 }

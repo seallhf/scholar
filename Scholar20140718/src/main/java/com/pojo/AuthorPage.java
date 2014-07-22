@@ -1,5 +1,8 @@
 package com.pojo;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class AuthorPage {
 
 	private Integer id;
@@ -31,9 +34,6 @@ public class AuthorPage {
 
 	// 是否是一个年轻的学者
 	private boolean isYoungEnough;
-
-	// 作者论文情况ID
-	private String authorPaper;
 
 	public Integer getId() {
 		return id;
@@ -137,13 +137,5 @@ public class AuthorPage {
 
 	public void setYoungEnough(boolean isYoungEnough) {
 		this.isYoungEnough = isYoungEnough;
-	}
-
-	public String getAuthorPaper() {
-		return authorPaper;
-	}
-
-	public void setAuthorPaper(String authorPaper) {
-		this.authorPaper = authorPaper;
 	}
 }

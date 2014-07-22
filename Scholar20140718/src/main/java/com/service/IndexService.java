@@ -11,57 +11,32 @@ import com.dao.ElasticSearchDao;
 import com.mongodb.DBObject;
 import com.pojo.Author;
 import com.pojo.AuthorRank;
-import com.spider.ScholarSpider;
 import com.utils.spring.SpringBeanFactory;
 
 @Service
 public class IndexService {
 
 	@Resource
-	ElasticSearchDao service;
+	ElasticSearchDao elastic;
 	@Resource
-	MongoService mservice;
+	MongoService mongo;
 	@Resource
-	AuthorService aservice;
+	MysqlService mysql;
 	@Resource
-	ScholarSpider sservice;
+	AuthorService authorService;
 
 	/**
 	 * 向elasticsearch添加所有用户的索引
 	 * 
 	 */
 	public void updateIndex() {
-		AuthorRank authorRank;
 		int i = 0;
-		Map<String, DBObject> authors = mservice.getAllAuthor();
+		Map<String, DBObject> authors = mongo.getAllAuthor();
 		for (String aid : authors.keySet()) {
 			Author author = (Author) JSONObject.toJavaObject(
 					(JSONObject) JSONObject.toJSON(authors.get(aid)),
 					Author.class);
-			if (author.getAuthorPaper() == null) {
-				author = aservice.createAuthorPaper(author);
-				mservice.updateAuthorPaper(aid, author);
-			}
-			if (author.getAid() != null) {
-				authorRank = aservice.getAuthorRank(author);
-				try {
-					if (authorRank.getYear() >= 2007) {
-						service.putAuthorRankIntoIndex(authorRank);
-						author.setIsYoungEnough(true);
-						mservice.updateAuthorData(author.getAid(),
-								"isYoungEnough", author);
-					} else {
-						service.putAuthorRankIntoIndex(authorRank);
-						author.setIsYoungEnough(false);
-						mservice.updateAuthorData(author.getAid(),
-								"isYoungEnough", author);
-					}
-					// mservice.updateAuthorPaper(aid, author);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			updateIndex(author);
 			// if(i>=10)
 			// break;
 			System.out.println((i++) + ":" + aid);
@@ -69,17 +44,27 @@ public class IndexService {
 	}
 
 	/**
-	 * 根据用户的ID更新用户的论文等级
-	 * 
-	 * @param aid
+	 * 添加目标用户数据库索引
+	 * @param author
 	 */
-	public void updateAuthorPaper(String aid) {
-
-		Author author = aservice.createAuthorPaper(aid);
-		// Author author = sservice.getAuthorDetail(aid);
-		// author = aservice.createAuthorPaper(author);
-		mservice.updateAuthorPaper(aid, author);
-		// mservice.insertAuthor(author);
+	public void updateIndex(Author author) {
+		if (mysql.findAuthorPaper(author.getAid()) == null) {
+			// 创建AuthorPaper并插务数据库
+			mysql.insertAuthorPaper(authorService.createAuthorPaper(author));
+			// 创建AuthorPage并插入数据库
+			mysql.insertAuthorPage(authorService.createAuthorPage(author));
+		}
+		if (author.getAid() != null) {
+			AuthorRank authorRank = authorService.createAuthorRank(author);
+			try {
+				if (authorRank.getYear() >= 2007) {
+					// 添加搜索索引
+					elastic.putAuthorRankIntoIndex(authorRank);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void main(String[] args) {

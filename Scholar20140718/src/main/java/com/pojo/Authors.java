@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+//数据库导入完成后需删除
 @Component
-public class Author {
+public class Authors {
 
 	private String imgUrl;
 
@@ -25,9 +26,25 @@ public class Author {
 	private List<String> coAuthors;
 
 	// google中论文的访问地址列表
-	private Map<String, String> papers;
+	private List<String> papers;
 
 	private String homePage;
+
+	private boolean isYoungEnough;
+
+	private AuthorPaper authorPaper;
+
+	public AuthorPaper getAuthorPaper() {
+		return authorPaper;
+	}
+
+	public void setAuthorPaper(AuthorPaper authorPaper) {
+		this.authorPaper = authorPaper;
+	}
+
+	public void setYoungEnough(boolean isYoungEnough) {
+		this.isYoungEnough = isYoungEnough;
+	}
 
 	public String getAid() {
 		return aid;
@@ -85,11 +102,11 @@ public class Author {
 		this.coAuthors = coAuthors;
 	}
 
-	public Map<String, String> getPapers() {
+	public List<String> getPapers() {
 		return papers;
 	}
 
-	public void setPapers(Map<String, String> papers) {
+	public void setPapers(List<String> papers) {
 		this.papers = papers;
 	}
 
@@ -108,4 +125,13 @@ public class Author {
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
 	}
+
+	public boolean getIsYoungEnough() {
+		return isYoungEnough;
+	}
+
+	public void setIsYoungEnough(boolean isYoungEnough) {
+		this.isYoungEnough = isYoungEnough;
+	}
+
 }
