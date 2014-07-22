@@ -1,7 +1,5 @@
 package com.pojo;
 
-import java.util.List;
-
 public class AuthorPage {
 
 	private Integer id;
@@ -24,7 +22,7 @@ public class AuthorPage {
 	private Integer year;
 
 	// 有合作关系的大节点
-	private List<String> coBigAuthors;
+	private String coBigAuthors;
 
 	// 最有影响力的论文
 	private String famousPaper;
@@ -34,7 +32,7 @@ public class AuthorPage {
 	// 是否是一个年轻的学者
 	private boolean isYoungEnough;
 
-	// 作者论文情况
+	// 作者论文情况ID
 	private String authorPaper;
 
 	public Integer getId() {
@@ -109,11 +107,11 @@ public class AuthorPage {
 		this.year = year;
 	}
 
-	public List<String> getCoBigAuthors() {
+	public String getCoBigAuthors() {
 		return coBigAuthors;
 	}
 
-	public void setCoBigAuthors(List<String> coBigAuthors) {
+	public void setCoBigAuthors(String coBigAuthors) {
 		this.coBigAuthors = coBigAuthors;
 	}
 

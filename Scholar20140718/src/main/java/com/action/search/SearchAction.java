@@ -60,7 +60,7 @@ public class SearchAction extends BaseAction {
 			}
 			PageService pageService = (PageService) SpringBeanFactory
 					.getBean("pageService");
-			pageService.init(pno, query, "default");
+			pageService.init(pno, query, "apapers");
 			myPage = pageService.getPage();
 			mylist = pageService.getPage().getList();
 			return SUCCESS;

@@ -125,7 +125,7 @@ public class ElasticSearchDao {
 	 */
 	public SearchResponse findByScoreAType(String query,
 			Map<String, String> terms, long from, long size) {
-		String script = "doc['atype'].value";
+		String script = "doc['apapers'].value";
 		QueryBuilder qb = QueryBuilders.queryString(query);
 		SearchResponse respons = client
 				.prepareSearch("authorrank")

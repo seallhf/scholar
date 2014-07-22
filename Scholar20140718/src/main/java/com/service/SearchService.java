@@ -48,15 +48,15 @@ public class SearchService {
 		Map<String, String> terms = new HashMap<String, String>();
 		//terms.put("location", "student");
 		SearchResponse response;
-		if(sortBy.equals("defualt"))
-			response = eSService.findReScoreWithFilterByTerm(query,
-				terms, (start - 1) * length, length);
-		else if(sortBy.equals("aType"))
-			response = eSService.findReScoreWithFilterByTerm(query,
+		if(sortBy.equals("apapers"))
+			response = eSService.findByScoreAType(query,
+					terms, (start - 1) * length, length);
+		else if(sortBy.equals("year"))
+			response = eSService.findByScoreYear(query,
 					terms, (start - 1) * length, length);
 		else
 			response = eSService.findReScoreWithFilterByTerm(query,
-					terms, (start - 1) * length, length);
+				terms, (start - 1) * length, length);
 		allcounts = response.getHits().totalHits();
 		for (SearchHit sh : response.getHits()) {
 			String id = (String) sh.getSource().get("aid");
