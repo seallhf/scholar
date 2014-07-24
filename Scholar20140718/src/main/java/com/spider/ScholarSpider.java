@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.apache.catalina.util.MD5Encoder;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,10 +20,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import com.nlp.CCFComparation;
 import com.pojo.Author;
 import com.pojo.Paper;
-import com.service.CCFComparation;
-import com.service.MongoService;
+import com.spider.service.MongoService;
 import com.utils.HttpUtil;
 import com.utils.IOUtil;
 import com.utils.MD5Util;

@@ -1,4 +1,4 @@
-package com.service;
+package com.web.service;
 
 import java.util.List;
 
@@ -6,8 +6,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.pojo.Page;
+import com.search.service.SearchService;
 import com.utils.TypeCastUtil;
+import com.web.pojo.Page;
 
 @Service
 public class PageService {

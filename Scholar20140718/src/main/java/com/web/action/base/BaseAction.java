@@ -1,4 +1,4 @@
-package com.action.base;
+package com.web.action.base;
 
 import com.opensymphony.xwork2.ActionSupport;
 

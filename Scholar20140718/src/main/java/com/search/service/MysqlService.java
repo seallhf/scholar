@@ -1,4 +1,4 @@
-package com.service;
+package com.search.service;
 
 import java.util.List;
 import java.util.Map;
@@ -8,11 +8,12 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dao.MysqlDao;
 import com.mongodb.DBObject;
 import com.pojo.Author;
 import com.pojo.AuthorPage;
 import com.pojo.AuthorPaper;
+import com.search.dao.MysqlDao;
+import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
 
 @Service

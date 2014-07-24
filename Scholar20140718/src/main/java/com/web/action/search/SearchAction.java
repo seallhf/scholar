@@ -1,14 +1,14 @@
-package com.action.search;
+package com.web.action.search;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.action.base.BaseAction;
-import com.pojo.Page;
-import com.service.MongoService;
-import com.service.PageService;
+import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
+import com.web.action.base.BaseAction;
+import com.web.pojo.Page;
+import com.web.service.PageService;
 
 @SuppressWarnings("serial")
 public class SearchAction extends BaseAction {

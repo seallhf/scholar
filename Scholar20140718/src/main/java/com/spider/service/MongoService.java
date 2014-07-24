@@ -1,4 +1,4 @@
-package com.service;
+package com.spider.service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,13 +8,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dao.MongoDao;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.Author;
 import com.pojo.AuthorRank;
 import com.pojo.Authors;
 import com.pojo.Paper;
+import com.spider.dao.MongoDao;
 
 @Service
 public class MongoService {

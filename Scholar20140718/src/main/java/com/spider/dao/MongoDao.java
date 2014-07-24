@@ -1,4 +1,4 @@
-package com.dao;
+package com.spider.dao;
 
 import java.net.UnknownHostException;
 import java.util.HashMap;

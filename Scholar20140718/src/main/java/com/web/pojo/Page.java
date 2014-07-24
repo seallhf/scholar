@@ -1,4 +1,4 @@
-package com.pojo;
+package com.web.pojo;
 
 import java.util.List;
 

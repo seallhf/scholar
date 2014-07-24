@@ -1,4 +1,4 @@
-package com.service;
+package com.search.service;
 
 import java.util.Map;
 
@@ -7,10 +7,11 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dao.ElasticSearchDao;
 import com.mongodb.DBObject;
 import com.pojo.Author;
 import com.pojo.AuthorRank;
+import com.search.dao.ElasticSearchDao;
+import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
 
 @Service
@@ -66,6 +67,8 @@ public class IndexService {
 			}
 		}
 	}
+	
+	
 
 	public static void main(String[] args) {
 		IndexService index = (IndexService) SpringBeanFactory

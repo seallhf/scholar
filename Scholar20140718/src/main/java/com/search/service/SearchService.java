@@ -1,4 +1,9 @@
-package com.service;
+/**
+ * 对前端调用接口
+ * 
+ */
+
+package com.search.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +16,10 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.stereotype.Service;
 
-import com.dao.ElasticSearchDao;
 import com.pojo.Author;
 import com.pojo.Authors;
+import com.search.dao.ElasticSearchDao;
+import com.spider.service.MongoService;
 
 @Service
 public class SearchService {

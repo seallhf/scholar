@@ -1,4 +1,4 @@
-package com.dao;
+package com.search.dao;
 
 import java.util.Iterator;
 import java.util.Map;

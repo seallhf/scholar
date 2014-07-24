@@ -1,4 +1,4 @@
-package com.service;
+package com.search.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +15,7 @@ import com.pojo.AuthorPage;
 import com.pojo.AuthorPaper;
 import com.pojo.AuthorRank;
 import com.pojo.Paper;
+import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
 
 @Service
@@ -117,7 +118,7 @@ public class AuthorService {
 		authorPaper.setAid(author.getAid());
 		return authorPaper;
 	}
-
+	
 	public AuthorRank createAuthorRank(String aid) {
 		Author author = mongoService.findAuthor(aid);
 		if (author != null) {
@@ -227,6 +228,7 @@ public class AuthorService {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private float caculateRank(Author author, AuthorPaper authorPaper) {
 		float rank = 0.01f * author.getCiteindex() + 0.6f
 				* (authorPaper.getAconf() + authorPaper.getAjounal()) + 0.3f
@@ -236,9 +238,6 @@ public class AuthorService {
 	}
 
 	public static void main(String[] args) {
-		AuthorService a = (AuthorService) SpringBeanFactory
-				.getBean("authorService");
-		AuthorRank rank = a.createAuthorRank("xrRQNgEAAAAJ");
-		System.out.println(rank.getYear());
+
 	}
 }

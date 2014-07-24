@@ -1,4 +1,4 @@
-package com.service;
+package com.nlp;
 
 import org.springframework.stereotype.Service;
 
