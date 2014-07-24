@@ -9,7 +9,7 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<org.springframework.version>4.0.5.RELEASE</org.springframework.version>
-		<!--<org.springframework.version>3.2.2.RELEASE</org.springframework.version> -->
+		<!--<org.springframework.version>3.2.2.RELEASE</org.springframework.version>-->
 		<struts.version>2.3.4</struts.version>
 		<aspectj.version>1.6.9</aspectj.version>
 		<slf4j.version>1.6.4</slf4j.version>

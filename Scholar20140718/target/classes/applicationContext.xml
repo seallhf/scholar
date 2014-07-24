@@ -10,7 +10,7 @@
 	      http://www.springframework.org/schema/context/spring-context.xsd
 	      http://www.pilato.fr/schema/elasticsearch http://www.pilato.fr/schema/elasticsearch/elasticsearch-0.3.xsd">
 
-	<bean id="mongoDao" class="com.dao.MongoDao">
+	<bean id="mongoDao" class="com.spider.dao.MongoDao">
 		<constructor-arg index="0">
 			<value>127.0.0.1</value>
 		</constructor-arg>

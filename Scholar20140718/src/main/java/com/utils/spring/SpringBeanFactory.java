@@ -1,8 +1,3 @@
-/**
- * tenfen.com Inc.
- * Copyright (c) 2012-2015 All Rights Reserved.
- */
-
 package com.utils.spring;
 
 import org.springframework.context.ApplicationContext;
@@ -17,7 +12,6 @@ public class SpringBeanFactory {
 		new ClassPathXmlApplicationContext(new String[] {
 			"classpath:applicationContext.xml"
 		});
-
 
 	public static Object getBean(String beanId) {
 
