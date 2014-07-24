@@ -3,6 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -14,6 +15,7 @@
 <head>
 <script src="/s2sh/main/webapp/res/jquery/jquery-1.3.2.min.js"
 	type="text/javascript"></script>
+<script src="<%=basePath%>js/page.js" type="text/javascript"></script>
 <link
 	href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css"
 	rel="stylesheet">
@@ -41,7 +43,7 @@
 		</div>
 		<div class="search_classification">这里是人才分类标签收缩处</div>
 		<br />
-		
+
 		<div class="search_result_tip">
 			<div style="width: 50%; float: left; line-height: 10px;">
 				<em style="color: red"><s:property value="query" /></em> 查询结果
@@ -79,7 +81,11 @@
 								&nbsp;&nbsp;<i class="icon-envelope"></i>&nbsp;&nbsp;${Author.email }
 							</div>
 							<div class="author_tags">
-								&nbsp;&nbsp;<i class="icon-tags"></i>&nbsp;&nbsp;${Author.tags }
+								&nbsp;&nbsp;<i class="icon-tags"></i>&nbsp;&nbsp;
+								<c:set value="${fn:split(Author.tags, ';')}" var="str1" />
+								<c:forEach items="${ str1 }" var="s">
+									<font color='#006699'><a href='search.action?query=${s}'>${fn:trim(s)}</a></font>&nbsp;
+								</c:forEach>
 							</div>
 							<div class="author_citeindex">
 								&nbsp;&nbsp;<i class="icon-book"></i>&nbsp;&nbsp;论文被引用次数:<strong>${Author.citeindex}</strong>

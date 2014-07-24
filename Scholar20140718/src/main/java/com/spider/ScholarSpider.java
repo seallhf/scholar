@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.pojo.Author;
 import com.pojo.Paper;
 import com.service.CCFComparation;
+import com.service.MongoService;
 import com.utils.HttpUtil;
 import com.utils.IOUtil;
 import com.utils.MD5Util;
@@ -35,6 +36,9 @@ public class ScholarSpider {
 	@Resource
 	private CCFComparation ccf;
 
+	@Resource
+	private MongoService mongo;
+
 	private static Logger log = Logger.getLogger(ScholarSpider.class);
 
 	private Map<String, String> header = new HashMap<String, String>();
@@ -44,10 +48,10 @@ public class ScholarSpider {
 	 */
 	private Map<String, String> getHeader() {
 		header.put("X-Client-Data",
-				"CP21yQEIkbbJAQiktskBCKm2yQEIwbbJAQiehsoBCLiIygEIqZTKAQ==");
+				"CP21yQEIkbbJAQiktskBCKm2yQEIwbbJAQiehsoBCLiIygE=");
 		header.put(
 				"cookie",
-				"PREF=ID=7a4885fa2516ec22:NW=1:TM=1404377596:LM=1404377596:S=5FiX8nNjLa1Y-i_v; GOOGLE_ABUSE_EXEMPTION=ID=ca4042f01131d9fe:TM=1404897105:C=c:IP=171.217.190.148-:S=APGng0tE0uhAnPe0u2gNVHEM6wUGYsS_mg");
+				"PREF=ID=7a4885fa2516ec22:NW=1:TM=1404377596:LM=1404377596:S=5FiX8nNjLa1Y-i_v; GOOGLE_ABUSE_EXEMPTION=ID=55d0b81e29b06924:TM=1406109831:C=c:IP=116.251.217.178-:S=APGng0tRQR87YA-nzlHE0kiTXhsRqcbu4Q");
 		header.put("Host", "scholar.google.com.cn");
 		header.put("Connection", "keep-alive");
 		header.put("Accept-Encoding", "gzip,deflate,sdch");
@@ -205,8 +209,14 @@ public class ScholarSpider {
 					urlId = m.group().replaceAll(authorId + "\\:", "");
 				}
 				String title = paper.getElementsByTag("a").first().text();
-				lists.put(MD5Util.MD5(title),
-						urlId);
+				lists.put(MD5Util.MD5(title), urlId);
+				Paper _paper = getPaperDetail(paper, authorId, urlId);
+				if (_paper != null && mongo.findPaper(_paper.getPid()) == null) {
+					mongo.insertPaper(_paper);
+					System.out.println(authorId + ":" + _paper.getPid()
+							+ "----->" + "inserted");
+				} else
+					System.out.println(authorId + ":" + _paper.getPid());
 			}
 			int i = 2;
 			boolean stop = false;
@@ -235,6 +245,15 @@ public class ScholarSpider {
 						String title = paper.getElementsByTag("a").first()
 								.text();
 						lists.put(MD5Util.MD5(title), urlId);
+						Paper _paper = getPaperDetail(paper, authorId, urlId);
+						if (_paper != null
+								&& mongo.findPaper(_paper.getPid()) == null) {
+							mongo.insertPaper(_paper);
+							System.out
+									.println(authorId + ":" + _paper.getPid()+ "----->" + "inserted");
+						} else
+							System.out
+									.println(authorId + ":" + _paper.getPid());
 					}
 				} else
 					stop = true;
@@ -242,7 +261,7 @@ public class ScholarSpider {
 			log.info("GET user <" + authorId + "> PAPER list!");
 			return lists;
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -314,81 +333,125 @@ public class ScholarSpider {
 			if (m.find()) {
 				author.setAid(m.group().replaceAll("user=|\\&", ""));
 			}
-		} catch (Exception e) {
-			System.out.println("html exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			author.setName(page
-					.getElementsByAttributeValue("id", "cit-name-display")
-					.first().text());
-		} catch (Exception e1) {
-			System.out.println("name exception！");
-			IOUtil.write2File("./error/error.html", html);
 			try {
-				System.out.println("Warning Detected! Take a break!");
-				Thread.sleep(120000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				author.setName(page
+						.getElementsByAttributeValue("id", "cit-name-display")
+						.first().text());
+			} catch (Exception e1) {
+				System.out.println("name exception！");
+				// IOUtil.write2File("./error/error.html", html);
+				try {
+					System.out.println("Warning Detected! Take a break!");
+					Thread.sleep(120000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (!html.equals(""))
+					return getAuthorDetail(authorId);
 			}
-			if (!html.equals(""))
+			try {
+				author.setImgUrl(page
+						.getElementsByAttributeValue("style",
+								"text-align: center;").first()
+						.getElementsByTag("img").first().attr("src"));
+			} catch (Exception e1) {
+				System.out.println("image exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				author.setCollege(page
+						.getElementsByAttributeValue("id",
+								"cit-affiliation-display").first().text());
+			} catch (Exception e1) {
+				System.out.println("college exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				author.setTags(page
+						.getElementsByAttributeValue("id", "cit-int-read")
+						.text().replaceAll("\\&nbsp", "").replaceAll("-", ";"));
+			} catch (Exception e1) {
+				System.out.println("tags exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				author.setEmail(page.getElementsByAttributeValue("id",
+						"cit-domain-display").text());
+			} catch (Exception e1) {
+				System.out.println("email exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				author.setHomePage(page
+						.getElementsByAttributeValue("id", "cit-homepage-read")
+						.first().getElementsByTag("a").first().attr("href"));
+			} catch (Exception e1) {
+				System.out.println("homepage exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				author.setCiteindex(Integer.parseInt(page
+						.getElementsByAttributeValue("class",
+								"cit-borderbottom")
+						.first()
+						.getElementsByAttributeValue("class",
+								"cit-borderleft cit-data").first().text()));
+			} catch (Exception e1) {
+				System.out.println("index exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			author.setPapers(getAuthorPapers(page, author.getAid()));
+			author.setCoAuthors(getCoAuthor(author.getAid()));
+			log.info("GET user <" + authorId + "> details!");
+			return author;
+		} catch (Exception e) {
+			System.out.println("html exception！Author : " + authorId);
+			if (pageCount < 3) {
+				pageCount++;
 				return getAuthorDetail(authorId);
+			} else {
+				pageCount = 0;
+				return null;
+			}
+			// IOUtil.write2File("./error/error.html", html);
 		}
-		try {
-			author.setImgUrl(page
-					.getElementsByAttributeValue("style", "text-align: center;")
-					.first().getElementsByTag("img").first().attr("src"));
-		} catch (Exception e1) {
-			System.out.println("image exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			author.setCollege(page
-					.getElementsByAttributeValue("id",
-							"cit-affiliation-display").first().text());
-		} catch (Exception e1) {
-			System.out.println("college exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			author.setTags(page
-					.getElementsByAttributeValue("id", "cit-int-read").text()
-					.replaceAll("\\&nbsp", "").replaceAll("-", ";"));
-		} catch (Exception e1) {
-			System.out.println("tags exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			author.setEmail(page.getElementsByAttributeValue("id",
-					"cit-domain-display").text());
-		} catch (Exception e1) {
-			System.out.println("email exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			author.setHomePage(page
-					.getElementsByAttributeValue("id", "cit-homepage-read")
-					.first().getElementsByTag("a").first().attr("href"));
-		} catch (Exception e1) {
-			System.out.println("homepage exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			author.setCiteindex(Integer.parseInt(page
-					.getElementsByAttributeValue("class", "cit-borderbottom")
-					.first()
-					.getElementsByAttributeValue("class",
-							"cit-borderleft cit-data").first().text()));
-		} catch (Exception e1) {
-			System.out.println("index exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		author.setPapers(getAuthorPapers(page, author.getAid()));
-		author.setCoAuthors(getCoAuthor(author.getAid()));
-		log.info("GET user <" + authorId + "> details!");
-		return author;
 	}
+
+	@SuppressWarnings("static-access")
+	public Paper getPaperDetail(Element table, String authorId, String urlId) {
+		Paper paper = (Paper) SpringBeanFactory.getBean("paper");
+		Element e = table.getElementById("col-title");
+		paper.setTitle(e.getElementsByTag("a").first().text());
+		paper.setPid(MD5Util.MD5(paper.getTitle()));
+		Elements es = e.getElementsByTag("span");
+		if (es.size() > 1) {
+			paper.setJounalName(es.get(1).text());
+			paper.setAuthors(es.get(0).text());
+		} else if (es.size() <= 1) {
+			// return getPaperDetail(authorId,urlId);
+			paper.setJounalName("");
+			paper.setAuthors("");
+		}
+		try {
+			paper.setCiteIndex(Integer.parseInt(table
+					.getElementById("col-citedby").getElementsByTag("a")
+					.first().text()));
+		} catch (Exception e1) {
+			// e1.printStackTrace();
+			System.out.println("get citeIndex exception!");
+		}
+		try {
+			paper.setDate(table.getElementById("col-year").text());
+		} catch (Exception e1) {
+			// e1.printStackTrace();
+			System.out.println("get Date exception!");
+		}
+		paper.setTag(ccf.getPaperType(paper.getJounalName()));
+		return paper;
+	}
+
+	private int pageCount = 0;
 
 	/**
 	 * 
@@ -400,107 +463,109 @@ public class ScholarSpider {
 	 */
 	@SuppressWarnings("static-access")
 	public Paper getPaperDetail(String authorId, String paperId) {
-		String html = "";
-		Paper paper = (Paper) SpringBeanFactory.getBean("paper");
 		try {
-			html = HttpUtil.get(
-					"http://scholar.google.com.cn/citations?view_op=view_citation&hl=zh-CN&user="
-							+ authorId + "&pagesize=100&citation_for_view="
-							+ authorId + ":" + paperId, getHeader());
-
-		} catch (Exception e) {
-			System.out.println("html exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		Document page = Jsoup.parse(html);
-		try {
-			paper.setTitle(page.getElementsByAttributeValue("id", "title")
-					.first().text());
-		} catch (Exception e1) {
-			System.out.println("title exception！");
-			IOUtil.write2File("./error/error.html", html);
-			if (!html.equals("")
-					&& !page.getElementsByTag("title").first().text()
-							.equals("Error 404 (Not Found)!!1")) {
-				try {
+			String html = "";
+			Paper paper = (Paper) SpringBeanFactory.getBean("paper");
+			String url = "http://scholar.google.com.cn/citations?view_op=view_citation&hl=zh-CN&user="
+					+ authorId
+					+ "&pagesize=100&citation_for_view="
+					+ authorId
+					+ ":" + paperId;
+			html = HttpUtil.get(url, getHeader());
+			Document page = Jsoup.parse(html);
+			try {
+				paper.setTitle(page.getElementsByAttributeValue("id", "title")
+						.first().text());
+			} catch (Exception e1) {
+				System.out.println("title exception！");
+				IOUtil.write2File("./error/error.html", html);
+				if (page.getElementsByTag("title").first().text().equals(url)) {
 					System.out.println("Warning Detected! Take a break!");
 					Thread.sleep(120000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					return getPaperDetail(authorId, paperId);
+				} else
+					System.out.println("Google's error!" + paperId);
+				return null;
+			}
+			try {
+				String id = MD5Util.MD5(paper.getTitle());
+				paper.setPid(id);
+			} catch (Exception e1) {
+				System.out.println("paperid exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				paper.setUrl(page.getElementsByAttributeValue("id", "title")
+						.first().getElementsByTag("a").attr("href"));
+			} catch (Exception e1) {
+				System.out.println("url exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				paper.setDate(page
+						.getElementsByAttributeValue("id", "pubdate_sec")
+						.first().getElementsByAttributeValue("class", "cit-dd")
+						.text());
+			} catch (Exception e1) {
+				System.out.println("date exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				paper.setAuthors(page
+						.getElementsByAttributeValue("class", "cit-dd").get(1)
+						.text());
+			} catch (Exception e1) {
+				System.out.println("authors exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				paper.setBrief(page
+						.getElementsByAttributeValue("id", "description_sec")
+						.first().getElementsByAttributeValue("class", "cit-dd")
+						.text());
+			} catch (Exception e1) {
+				System.out.println("brief exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				paper.setJounalName(page
+						.getElementsByAttributeValue("id", "venue_sec").first()
+						.getElementsByAttributeValue("class", "cit-dd").text());
+			} catch (Exception e1) {
+				System.out.println("jounalName exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			try {
+				paper.setCiteIndex(Integer.parseInt(page
+						.getElementsByAttributeValue("id", "scholar_sec")
+						.first().getElementsByAttributeValue("class", "cit-dd")
+						.text().replaceAll("被引用次数：", "")));
+			} catch (Exception e1) {
+				System.out.println("citeIndex exception！");
+				// IOUtil.write2File("./error/error.html", html);
+			}
+			if (paper.getJounalName() != null)
+				paper.setTag(ccf.getPaperType(paper.getJounalName()));
+			log.info("GET paper <" + paperId + "> PAPER details!");
+			return paper;
+		} catch (Exception e) {
+			System.out.println("html exception！Paper");
+			if (pageCount < 3) {
+				pageCount++;
 				return getPaperDetail(authorId, paperId);
-			} else
-				System.out.println("Google's error!");
-			return null;
+			} else {
+				pageCount = 0;
+				return null;
+			}
+			// IOUtil.write2File("./error/error.html", html);
 		}
-		try {
-			String id = MD5Util.MD5(paper.getTitle());
-			paper.setPid(id);
-		} catch (Exception e1) {
-			System.out.println("paperid exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			paper.setUrl(page.getElementsByAttributeValue("id", "title")
-					.first().getElementsByTag("a").attr("href"));
-		} catch (Exception e1) {
-			System.out.println("url exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			paper.setDate(page.getElementsByAttributeValue("id", "pubdate_sec")
-					.first().getElementsByAttributeValue("class", "cit-dd")
-					.text());
-		} catch (Exception e1) {
-			System.out.println("date exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			paper.setAuthors(page
-					.getElementsByAttributeValue("class", "cit-dd").get(1)
-					.text());
-		} catch (Exception e1) {
-			System.out.println("authors exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			paper.setBrief(page
-					.getElementsByAttributeValue("id", "description_sec")
-					.first().getElementsByAttributeValue("class", "cit-dd")
-					.text());
-		} catch (Exception e1) {
-			System.out.println("brief exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			paper.setJounalName(page
-					.getElementsByAttributeValue("id", "venue_sec").first()
-					.getElementsByAttributeValue("class", "cit-dd").text());
-		} catch (Exception e1) {
-			System.out.println("jounalName exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		try {
-			paper.setCiteIndex(Integer.parseInt(page
-					.getElementsByAttributeValue("id", "scholar_sec").first()
-					.getElementsByAttributeValue("class", "cit-dd").text()
-					.replaceAll("被引用次数：", "")));
-		} catch (Exception e1) {
-			System.out.println("citeIndex exception！");
-			IOUtil.write2File("./error/error.html", html);
-		}
-		if (paper.getJounalName() != null)
-			paper.setTag(ccf.getPaperType(paper.getJounalName()));
-		log.info("GET paper <" + paperId + "> PAPER details!");
-		return paper;
 	}
 
 	public static void main(String[] args) {
 		ScholarSpider spider = new ScholarSpider();
 		String id = spider.getPaperDetail("V_NdI3sAAAAJ", "u5HHmVD_uO8C")
 				.getPid();
-		System.out.println(id);
+		// System.out.println(id);
 		Author a = spider.getAuthorDetail("V_NdI3sAAAAJ");
 		System.out.println(a.getPapers().get(id));
 	}

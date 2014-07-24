@@ -126,6 +126,11 @@ public class ElasticSearchDao {
 	public SearchResponse findByScoreAType(String query,
 			Map<String, String> terms, long from, long size) {
 		String script = "doc['apapers'].value";
+		SortOrder order;
+		if(terms.get("order").equals("desc"))
+			order=SortOrder.DESC;
+		else
+			order=SortOrder.ASC;
 		QueryBuilder qb = QueryBuilders.queryString(query);
 		SearchResponse respons = client
 				.prepareSearch("authorrank")
@@ -135,7 +140,7 @@ public class ElasticSearchDao {
 				// .addSort("rank", SortOrder.DESC)
 				.addSort(
 						SortBuilders.scriptSort(script, "number").lang("mvel")
-								.order(SortOrder.DESC))
+								.order(order))
 				.setFrom(TypeCastUtil.castLong2Integer(from))
 				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
 				.actionGet();
@@ -153,6 +158,11 @@ public class ElasticSearchDao {
 	public SearchResponse findByScoreYear(String query,
 			Map<String, String> terms, long from, long size) {
 		String script = "doc['year'].value";
+		SortOrder order;
+		if(terms.get("order").equals("desc"))
+			order=SortOrder.DESC;
+		else
+			order=SortOrder.ASC;
 		QueryBuilder qb = QueryBuilders.queryString(query);
 		SearchResponse respons = client
 				.prepareSearch("authorrank")
@@ -162,7 +172,7 @@ public class ElasticSearchDao {
 				// .addSort("rank", SortOrder.DESC)
 				.addSort(
 						SortBuilders.scriptSort(script, "number").lang("mvel")
-								.order(SortOrder.DESC))
+								.order(order))
 				.setFrom(TypeCastUtil.castLong2Integer(from))
 				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
 				.actionGet();

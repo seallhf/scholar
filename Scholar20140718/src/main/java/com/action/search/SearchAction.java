@@ -39,7 +39,7 @@ public class SearchAction extends BaseAction {
 	 *            the message to set
 	 */
 	public void setQuery(String query) {
-		this.query = query;
+		this.query = query.trim();
 	}
 
 	public String getSortBy() {

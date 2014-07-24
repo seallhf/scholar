@@ -64,14 +64,6 @@ public class MongoService {
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("pid", pid);
 		return (Paper) JSONObject.toJavaObject(
-				(JSONObject) JSONObject.toJSON(mongoDao.find(PAPER, query)),
-				Paper.class);
-	}
-	
-	public Paper findPaperN(String pid) {
-		Map<String, String> query = new HashMap<String, String>();
-		query.put("pid", pid);
-		return (Paper) JSONObject.toJavaObject(
 				(JSONObject) JSONObject.toJSON(mongoDao.find("paper", query)),
 				Paper.class);
 	}
@@ -89,9 +81,9 @@ public class MongoService {
 		updateCondition.put("aid", aid);
 		DBObject updatedValue = new BasicDBObject();
 		updatedValue.put(updateField, ((JSONObject) JSONObject
-				.toJSON(newAuthor)).getString(updateField));
+				.toJSON(newAuthor)).get(updateField));
 		DBObject updatedSetValue = new BasicDBObject("$set", updatedValue);
-		mongoDao.update(AUTHOR, updateCondition, updatedSetValue);
+		mongoDao.update("author", updateCondition, updatedSetValue);
 	}
 	
 	/**
@@ -107,7 +99,7 @@ public class MongoService {
 		updateCondition.put("pid", pid);
 		DBObject updatedValue = new BasicDBObject();
 		updatedValue.put(updateField, ((JSONObject) JSONObject
-				.toJSON(newPaper)).getString(updateField));
+				.toJSON(newPaper)).get(updateField));
 		DBObject updatedSetValue = new BasicDBObject("$set", updatedValue);
 		mongoDao.update(PAPER, updateCondition, updatedSetValue);
 	}

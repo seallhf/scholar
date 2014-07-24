@@ -1,17 +1,13 @@
 package com.spider;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mongodb.DBObject;
 import com.pojo.Author;
-import com.pojo.Authors;
 import com.pojo.Paper;
 import com.service.AuthorService;
 import com.service.MongoService;
@@ -32,42 +28,42 @@ public class SpiderService {
 		Map<String, DBObject> authors = service.getAllAuthor();
 		int i = 0;
 		for (String aid : authors.keySet()) {
-			if (aid != null) {
-				Authors as = JSONObject.toJavaObject(
-						(JSONObject) JSONObject.toJSON(authors.get(aid)),
-						Authors.class);
-				if (service.findAuthorN(aid) == null) {
-					Author a = (Author) SpringBeanFactory.getBean("author");
-					a.setAid(as.getAid());
-					a.setCiteindex(as.getCiteindex());
-					a.setCoAuthors(as.getCoAuthors());
-					a.setCollege(as.getCollege());
-					a.setEmail(as.getEmail());
-					a.setHomePage(as.getHomePage());
-					a.setImgUrl(as.getImgUrl());
-					a.setName(as.getName());
-					a.setTags(as.getTags());
-					Map<String, String> papers = new HashMap<String, String>();
-					List<String> paperlist = as.getPapers();
-					if (paperlist != null && paperlist.size() > 0)
-						for (String pid : paperlist) {
-							Paper paper = spider.getPaperDetail(aid, pid);
-							if (paper != null) {
-								papers.put(paper.getPid(), pid);
-								if (service.findPaperN(paper.getPid()) == null)
-									service.insertPaper(paper);
-								System.out.println(aid + ":" + pid);
-							}
-						}
-					a.setPapers(papers);
-					service.insertAuthor(a);
-				}
-				System.out.println((i++) + ":" + aid);
+			if (aid != null && !aid.equals("")) {
+				spideAuthor(aid);
+				// break;
 			}
+			System.out.println((i++) + ":" + aid);
 		}
 	}
-	
-	
+
+	public void spideAuthor(String aid) {
+		Author a = service.findAuthor(aid);
+		if (a == null) {
+			a = spider.getAuthorDetail(aid);
+			if (a != null) {
+				service.insertAuthor(a);
+				System.out.println("author :" + aid + "---->inserted!");
+			}
+		} else if (a.getPapers() == null) {
+			a = spider.getAuthorDetail(aid);
+			if (a != null) {
+				service.updateAuthorData(aid, "papers", a);
+				System.out.println("author :" + aid + "---->updated!");
+			}
+		}
+		// Map<String, String> papers = a.getPapers();
+		// if (papers != null && papers.size() > 0)
+		// for (String pid : papers.keySet()) {
+		// if (service.findPaper(pid) == null) {
+		// Paper paper = spider.getPaperDetail(aid,
+		// papers.get(pid));
+		// if (paper != null) {
+		// service.insertPaper(paper);
+		// System.out.println(aid + ":" + pid);
+		// }
+		// }
+		// }
+	}
 
 	public void getNewAuthors() throws IOException {
 		// Map<String, String> authors = spider.getSeniorUser("chinese");
@@ -103,7 +99,6 @@ public class SpiderService {
 	public static void main(String[] args) {
 		SpiderService service = (SpiderService) SpringBeanFactory
 				.getBean("spiderService");
-		// service.updatePapers();
 		service.updateAuthors();
 	}
 }
