@@ -30,39 +30,14 @@ public class AuthorService {
 	 * @param aid
 	 *            作者ID
 	 */
-	public AuthorPaper createAuthorPaper(String aid) {
+	public AuthorPaper createAuthorPaper(String aid, List<Paper> papers) {
 		Author author = mongoService.findAuthor(aid);
 		if (author != null) {
-			return createAuthorPaper(author);
+			return createAuthorPaper(author, papers);
 		}
 		return null;
 	}
-	
-	public AuthorPage createAuthorPage(String aid) {
-		Author a = mongoService.findAuthor(aid);
-		if (a != null) {
-			return createAuthorPage(a);
-		}
-		return null;
-	}
-	
-	public AuthorPage createAuthorPage(Author a) {
-		AuthorPage authorPage = (AuthorPage) SpringBeanFactory
-				.getBean("authorPage");
-		authorPage.setAid(a.getAid());
-		authorPage.setCiteindex(a.getCiteindex());
-		authorPage.setCoBigAuthors(caculateBigCoauthor(a));
-		authorPage.setCollege(a.getCollege());
-		authorPage.setEmail(a.getEmail());
-		authorPage.setHomePage(a.getHomePage());
-		authorPage.setImgUrl(a.getImgUrl());
-		authorPage.setMostFarmousPaper(caculateFamousPaper(a));
-		authorPage.setName(a.getName());
-		authorPage.setTags(a.getTags());
-		authorPage.setYear(caculateFirstYear(a));
-		return authorPage;
-	}
-	
+
 	/**
 	 * 
 	 * 将作者对象作为传入创建用户的文章对象
@@ -70,50 +45,56 @@ public class AuthorService {
 	 * @param author
 	 * @return
 	 */
-	public AuthorPaper createAuthorPaper(Author author) {
-		Map<String, String> paperList = author.getPapers();
+	public AuthorPaper createAuthorPaper(Author author, List<Paper> papers) {
 		AuthorPaper authorPaper = (AuthorPaper) SpringBeanFactory
 				.getBean("authorPaper");
 		int aconf = 0, bconf = 0, cconf = 0;
 		int ajounal = 0, bjounal = 0, cjounal = 0;
-		if (paperList != null)
-			for (String pid : paperList.keySet()) {
-				Paper paper = mongoService.findPaper(pid);
-				if (paper != null) {
-					String tag = paper.getTag();
-					if (tag != null && !tag.equals("")) {
-						String[] lines = tag.split("\t");
-						String grade, type;
-						if (lines.length > 4) {
-							// 论文的等级
-							grade = tag.split("\t")[0];
-							// 论文的类型
-							type = tag.split("\t")[4];
-						} else {
-							// System.out.println(tag);
-							grade = tag.split("\t")[0];
-							// 论文的类型
-							type = tag.split("\t")[3];
+		if (papers == null) {
+			papers = new ArrayList<Paper>();
+			Map<String, String> paperList = author.getPapers();
+			if (paperList != null)
+				for (String pid : paperList.keySet()) {
+					Paper paper = mongoService.findPaper(pid);
+					papers.add(paper);
+				}
+		}
+		for (Paper paper : papers) {
+			if (paper != null) {
+				String tag = paper.getTag();
+				if (tag != null && !tag.equals("")) {
+					String[] lines = tag.split("\t");
+					String grade, type;
+					if (lines.length > 4) {
+						// 论文的等级
+						grade = tag.split("\t")[0];
+						// 论文的类型
+						type = tag.split("\t")[4];
+					} else {
+						// System.out.println(tag);
+						grade = tag.split("\t")[0];
+						// 论文的类型
+						type = tag.split("\t")[3];
 
-						}
-						if (type.equals("期刊")) {
-							if (grade.equals("A"))
-								ajounal++;
-							else if (grade.equals("B"))
-								bjounal++;
-							else if (grade.equals("C"))
-								cjounal++;
-						} else if (type.equals("会议")) {
-							if (grade.equals("A"))
-								aconf++;
-							else if (grade.equals("B"))
-								bconf++;
-							else if (grade.equals("C"))
-								cconf++;
-						}
+					}
+					if (type.equals("期刊")) {
+						if (grade.equals("A"))
+							ajounal++;
+						else if (grade.equals("B"))
+							bjounal++;
+						else if (grade.equals("C"))
+							cjounal++;
+					} else if (type.equals("会议")) {
+						if (grade.equals("A"))
+							aconf++;
+						else if (grade.equals("B"))
+							bconf++;
+						else if (grade.equals("C"))
+							cconf++;
 					}
 				}
 			}
+		}
 		authorPaper.setAconf(aconf);
 		authorPaper.setAjounal(ajounal);
 		authorPaper.setBconf(bconf);
@@ -124,27 +105,65 @@ public class AuthorService {
 		return authorPaper;
 	}
 
-	public AuthorRank createAuthorRank(String aid) {
-		Author author = mongoService.findAuthor(aid);
-		if (author != null) {
-			return createAuthorRank(author);
+	public AuthorPage createAuthorPage(String aid, List<Paper> papers) {
+		Author a = mongoService.findAuthor(aid);
+		if (a != null) {
+			return createAuthorPage(a, papers);
 		}
 		return null;
 	}
 
-	public AuthorRank createAuthorRank(Author author) {
+	public AuthorPage createAuthorPage(Author a, List<Paper> papers) {
+		AuthorPage authorPage = (AuthorPage) SpringBeanFactory
+				.getBean("authorPage");
+		if (papers == null) {
+			papers = new ArrayList<Paper>();
+			if (a.getPapers() != null) {
+				for (String pid : a.getPapers().keySet()) {
+					Paper paper = mongoService.findPaper(pid);
+					if (paper != null && paper.getCiteIndex() != null) {
+						papers.add(paper);
+					}
+				}
+			}
+		}
+		authorPage.setAid(a.getAid());
+		authorPage.setCiteindex(a.getCiteindex());
+		authorPage.setCoBigAuthors(caculateBigCoauthor(a));
+		authorPage.setCollege(a.getCollege());
+		authorPage.setEmail(a.getEmail());
+		authorPage.setHomePage(a.getHomePage());
+		authorPage.setImgUrl(a.getImgUrl());
+		authorPage.setMostFarmousPaper(caculateFamousPaper(papers));
+		authorPage.setName(a.getName());
+		authorPage.setTags(a.getTags());
+		authorPage.setYear(caculateFirstYear(papers));
+		return authorPage;
+	}
+
+	public AuthorRank createAuthorRank(String aid, List<Paper> papers) {
+		Author author = mongoService.findAuthor(aid);
+		if (author != null) {
+			return createAuthorRank(author, papers);
+		}
+		return null;
+	}
+
+	public AuthorRank createAuthorRank(Author author, List<Paper> papers) {
 		Map<String, String> paperList = author.getPapers();
 		AuthorRank authorRank = (AuthorRank) SpringBeanFactory
 				.getBean("authorRank");
-		List<Paper> papers = new ArrayList<Paper>();
-		if (paperList != null)
-			for (String pid : paperList.keySet()) {
-				Paper paper = mongoService.findPaper(pid);
-				if (paper != null) {
-					paper.setDate("1000/11/11");
-					papers.add(paper);
+		if (papers == null) {
+			papers = new ArrayList<Paper>();
+			if (paperList != null)
+				for (String pid : paperList.keySet()) {
+					Paper paper = mongoService.findPaper(pid);
+					if (paper != null) {
+						paper.setDate("1000/11/11");
+						papers.add(paper);
+					}
 				}
-			}
+		}
 		AuthorPaper authorPaper = mongoService.findAuthorPaper(author.getAid());
 		if (authorPaper != null) {
 			authorRank.setApapers(authorPaper.getAconf()
@@ -164,11 +183,10 @@ public class AuthorService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public int caculateFirstYear(Author author) {
+	private int caculateFirstYear(List<Paper> papers) {
 		List<Integer> list = new ArrayList<Integer>();
-		if (author.getPapers() != null) {
-			for (String pid : author.getPapers().keySet()) {
-				Paper paper = mongoService.findPaper(pid);
+		if (papers != null) {
+			for (Paper paper : papers) {
 				if (paper != null && paper.getDate() != null
 						&& !paper.getDate().equals("")) {
 					String years = paper.getDate();
@@ -192,11 +210,10 @@ public class AuthorService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public String caculateFamousPaper(Author author) {
+	private String caculateFamousPaper(List<Paper> papers) {
 		List<Paper> list = new ArrayList<Paper>();
-		if (author.getPapers() != null) {
-			for (String pid : author.getPapers().keySet()) {
-				Paper paper = mongoService.findPaper(pid);
+		if (papers != null) {
+			for (Paper paper : papers) {
 				if (paper != null && paper.getCiteIndex() != null) {
 					list.add(paper);
 				}
@@ -215,7 +232,7 @@ public class AuthorService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public String caculateBigCoauthor(Author author) {
+	private String caculateBigCoauthor(Author author) {
 		List<Author> list = new ArrayList<Author>();
 		if (author.getCoAuthors() != null) {
 			for (String aid : author.getCoAuthors()) {

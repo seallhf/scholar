@@ -70,7 +70,7 @@ function addCoAuthorDetails() {
 										},
 										success : function(json) {
 											html = "&nbsp;&nbsp;<i class=\"icon-user\"></i>&nbsp;&nbsp;"
-													+ "高级合作者<a href = \"http://scholar.google.com.cn/citations?hl=zh-CN&user="
+													+ "合作者<a href = \"http://scholar.google.com.cn/citations?hl=zh-CN&user="
 													+ json["aid"]
 													+ "&view_op=list_works&pagesize=100\">"
 													+ json["name"]

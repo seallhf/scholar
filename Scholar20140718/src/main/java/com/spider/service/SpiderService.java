@@ -1,18 +1,19 @@
 package com.spider.service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mongodb.DBObject;
 import com.pojo.Author;
-import com.pojo.Paper;
-import com.search.service.AuthorService;
+import com.search.service.IndexService;
 import com.spider.ScholarSpider;
-import com.utils.IOUtil;
 import com.utils.spring.SpringBeanFactory;
 
 @Service
@@ -21,12 +22,12 @@ public class SpiderService {
 	@Resource
 	ScholarSpider spider;
 	@Resource
-	MongoService service;
+	MongoService mongo;
 	@Resource
-	AuthorService aservice;
+	IndexService index;
 
 	public void updateAuthors() {
-		Map<String, DBObject> authors = service.getAllAuthor();
+		Map<String, DBObject> authors = mongo.getAllAuthor();
 		int i = 0;
 		for (String aid : authors.keySet()) {
 			if (aid != null && !aid.equals("")) {
@@ -39,69 +40,63 @@ public class SpiderService {
 		}
 	}
 
-	public void spideAuthor(String aid) {
-		Author a = service.findAuthor(aid);
+	public Author spideAuthor(String aid) {
+		Author a = mongo.findAuthor(aid);
 		if (a == null) {
 			a = spider.getAuthorDetail(aid);
 			if (a != null) {
-				service.insertAuthor(a);
+				mongo.insertAuthor(a);
 				System.out.println("author :" + aid + "---->inserted!");
 			}
 		} else if (a.getPapers() == null) {
 			a = spider.getAuthorDetail(aid);
 			if (a != null) {
-				service.updateAuthorData(aid, "papers", a);
+				mongo.updateAuthorData(aid, "papers", a);
 				System.out.println("author :" + aid + "---->updated!");
 			}
 		}
-		// Map<String, String> papers = a.getPapers();
-		// if (papers != null && papers.size() > 0)
-		// for (String pid : papers.keySet()) {
-		// if (service.findPaper(pid) == null) {
-		// Paper paper = spider.getPaperDetail(aid,
-		// papers.get(pid));
-		// if (paper != null) {
-		// service.insertPaper(paper);
-		// System.out.println(aid + ":" + pid);
-		// }
-		// }
-		// }
+		return a;
 	}
 
 	public void getNewAuthors() throws IOException {
-		// Map<String, String> authors = spider.getSeniorUser("chinese");
-		Map<String, String> authors = IOUtil.read2Map("d:/data.txt");
-		int i = 0;
+		Map<String, DBObject> authors = mongo.getAllAuthorOld();
+		// Map<String, String> authors = IOUtil.read2Map("d:/data.txt");
+		Map<String, String> coAuthors = new HashMap<String, String>();
 		for (String id : authors.keySet()) {
-			if (id != null) {
-				Author _author;
-				if (service.findAuthor(id) == null) {
-					_author = spider.getAuthorDetail(id);
-					service.insertAuthor(_author);
-				} else {
-					_author = service.findAuthor(id);
+			if (!coAuthors.containsKey(id))
+				coAuthors.put(id, null);
+		}
+		for (String id : authors.keySet()) {
+			List<String> coAuthor = (List<String>) ((JSONObject) JSONObject
+					.toJSON(authors.get(id))).get("coAuthors");
+			if (coAuthor != null)
+				for (String aid : coAuthor) {
+					if (!coAuthors.containsKey(aid))
+						coAuthors.put(aid, null);
 				}
-				if (_author.getPapers() != null) {
-					for (String pid : _author.getPapers().keySet()) {
-						if (service.findPaper(pid) == null) {
-							Paper paper = spider.getPaperDetail(
-									_author.getAid(),
-									_author.getPapers().get(pid));
-							if (paper != null)
-								service.insertPaper(paper);
-						}
-						System.out.println((i) + "_" + _author.getAid() + ":"
-								+ pid);
-					}
-				}
-			}
+		}
+		System.out.println("all author counts :" + coAuthors.size());
+		int i = 0;
+		for (String id : coAuthors.keySet()) {
+			getNewAuthor(id);
 			System.out.println((i++) + ":" + id);
 		}
 	}
 
-	public static void main(String[] args) {
+	public void getNewAuthor(String id) {
+		if (id != null) {
+			if (mongo.findAuthor(id) == null) {
+				// 向数据库添加抓取的用户和文章数据,并添加索引,写在spider中
+				Author a = spideAuthor(id);
+				// 向索引数据库添加缩影数据
+				// index.updateIndex(a);
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
 		SpiderService service = (SpiderService) SpringBeanFactory
 				.getBean("spiderService");
-		service.updateAuthors();
+		service.getNewAuthors();
 	}
 }

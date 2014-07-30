@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.nlp.CCFComparation;
 import com.pojo.Author;
 import com.pojo.Paper;
+import com.search.service.IndexService;
 import com.spider.service.MongoService;
 import com.utils.HttpUtil;
 import com.utils.IOUtil;
@@ -37,6 +38,9 @@ public class ScholarSpider {
 
 	@Resource
 	private MongoService mongo;
+	
+	@Resource
+	private IndexService index;
 
 	private static Logger log = Logger.getLogger(ScholarSpider.class);
 
@@ -195,6 +199,8 @@ public class ScholarSpider {
 	 */
 	public Map<String, String> getAuthorPapers(Document page, String authorId) {
 		try {
+			List<Paper> papers=new ArrayList<Paper>();
+			this.papers = null;
 			Map<String, String> lists = new HashMap<String, String>();
 			Elements e = page.getElementsByAttributeValue("class",
 					"cit-table item");
@@ -210,6 +216,7 @@ public class ScholarSpider {
 				String title = paper.getElementsByTag("a").first().text();
 				lists.put(MD5Util.MD5(title), urlId);
 				Paper _paper = getPaperDetail(paper, authorId, urlId);
+				papers.add(_paper);
 				if (_paper != null && mongo.findPaper(_paper.getPid()) == null) {
 					mongo.insertPaper(_paper);
 					System.out.println(authorId + ":" + _paper.getPid()
@@ -245,6 +252,7 @@ public class ScholarSpider {
 								.text();
 						lists.put(MD5Util.MD5(title), urlId);
 						Paper _paper = getPaperDetail(paper, authorId, urlId);
+						papers.add(_paper);
 						if (_paper != null
 								&& mongo.findPaper(_paper.getPid()) == null) {
 							mongo.insertPaper(_paper);
@@ -258,13 +266,16 @@ public class ScholarSpider {
 					stop = true;
 			}
 			log.info("GET user <" + authorId + "> PAPER list!");
+			this.papers=papers;
 			return lists;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+	
+	private List<Paper> papers;
+	
 	/**
 	 * 评估作者是否是年轻高端人群
 	 * 
@@ -403,6 +414,7 @@ public class ScholarSpider {
 			author.setPapers(getAuthorPapers(page, author.getAid()));
 			author.setCoAuthors(getCoAuthor(author.getAid()));
 			log.info("GET user <" + authorId + "> details!");
+			index.updateIndex(author, papers);
 			return author;
 		} catch (Exception e) {
 			System.out.println("html exception！Author : " + authorId);

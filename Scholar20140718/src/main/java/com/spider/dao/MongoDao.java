@@ -1,6 +1,7 @@
 package com.spider.dao;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +99,17 @@ public class MongoDao {
 		while (sort.hasNext()) {
 			DBObject object = sort.next();
 			result.put((String) object.get(column), object);
+		}
+		return result;
+	}
+	
+	public List<String> findIds(String tableName, String column) {
+		List<String> result = new ArrayList<String>();
+		DBCursor sort = mongoClient.getDB(dbName).getCollection(tableName)
+				.find();
+		while (sort.hasNext()) {
+			DBObject object = sort.next();
+			result.add((String) object.get(column));
 		}
 		return result;
 	}

@@ -24,9 +24,12 @@
 	rel="stylesheet">
 <title><s:property value="query" /> 搜索结果</title>
 </head>
-<div style="margin: 0 auto; width: 1000px;">
+<div style="margin: 0 auto; height: 80px;background-color: 	#ACD6FF;">
 	<div class="search_header">
-		<div style="margin-top: 20px; vertical-align: right;">
+		<div class="search_header_logo">
+			<img src="<%=basePath%>img/logo_title.jpg">
+		</div>
+		<div class="search_header_button">
 			<s:form action="search" class="form-search" display="inline-block">
 				<input
 					style="width: 600px; height: 30px; display: inline-block; margin-bottom: 0; vertical-align: middle;"
@@ -35,10 +38,14 @@
 				<button id="searchbutton"
 					style="width: 90px; height: auto; display: inline-block; margin-bottom: 0; vertical-align: middle;"
 					type="submit" class="btn btn-primary">查询</button>
-				<input id="searchTerms" type="hidden" name="terms" value="<s:property value="terms" />">
+				<input id="searchTerms" type="hidden" name="terms"
+					value="<s:property value="terms" />">
 			</s:form>
 		</div>
 	</div>
+</div>
+<br/>
+<div style="margin: 0 auto; width: 1000px;">
 	<input id="searchQuery" type="hidden"
 		value="<s:property value="query" />">
 	<div class="search_classification">

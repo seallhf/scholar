@@ -1,6 +1,7 @@
 package com.spider.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -43,6 +44,10 @@ public class MongoService {
 	 */
 	public Map<String, DBObject> getAllAuthor() {
 		return mongoDao.find(AUTHOR, "aid");
+	}
+	
+	public List<String> getAllAuthorId() {
+		return mongoDao.findIds(AUTHOR, "aid");
 	}
 
 	public Map<String, DBObject> getAllAuthorOld() {
@@ -207,22 +212,6 @@ public class MongoService {
 	}
 
 	public static void main(String[] args) throws Exception {
-		MongoService mservice = (MongoService) SpringBeanFactory
-				.getBean("mongoService");
-		AuthorService aservice = (AuthorService) SpringBeanFactory
-				.getBean("authorService");
-		Map<String, DBObject> all = mservice.getAllAuthor();
-		int i = 0;
-		for (String aid : all.keySet()) {
-			if (aid != null && mservice.findAuthorPage(aid) == null) {
-				AuthorPage a = aservice.createAuthorPage(aid);
-				AuthorPaper authorPaper = aservice.createAuthorPaper(aid);
-				if (mservice.findAuthorPaper(aid) == null)
-					mservice.insertAuthorPaper(authorPaper);
-				mservice.insertAuthorPage(a);
-			}
-			System.out.println((i++) + ":" + aid);
-		}
-
+		
 	}
 }

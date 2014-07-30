@@ -1,5 +1,6 @@
 package com.search.service;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -11,6 +12,7 @@ import com.mongodb.DBObject;
 import com.pojo.Author;
 import com.pojo.AuthorPage;
 import com.pojo.AuthorRank;
+import com.pojo.Paper;
 import com.search.dao.ElasticSearchDao;
 import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
@@ -51,14 +53,43 @@ public class IndexService {
 	public void updateIndex(Author author) {
 		if (mongo.findAuthorPaper(author.getAid()) == null) {
 			// 创建AuthorPaper并插务数据库
-			mongo.insertAuthorPaper(authorService.createAuthorPaper(author));
+			mongo.insertAuthorPaper(authorService.createAuthorPaper(author,
+					null));
 			// 创建AuthorPage并插入数据库
-			mongo.insertAuthorPage(authorService.createAuthorPage(author));
+			mongo.insertAuthorPage(authorService.createAuthorPage(author, null));
 		}
 		if (author.getAid() != null) {
 			AuthorPage authorPage = mongo.findAuthorPage(author.getAid());
 			if (authorPage != null) {
-				AuthorRank authorRank = authorService.createAuthorRank(author);
+				AuthorRank authorRank = authorService.createAuthorRank(author,null);
+				try {
+					{
+						// 添加搜索索引
+						elastic.putAuthorRankIntoIndex(authorRank);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 添加目标用户数据库索引
+	 * 
+	 * @param author
+	 */
+	public void updateIndex(Author author,List<Paper> papers) {
+		if (mongo.findAuthorPaper(author.getAid()) == null) {
+			// 创建AuthorPaper并插务数据库
+			mongo.insertAuthorPaper(authorService.createAuthorPaper(author,papers));
+			// 创建AuthorPage并插入数据库
+			mongo.insertAuthorPage(authorService.createAuthorPage(author,papers));
+		}
+		if (author.getAid() != null) {
+			AuthorPage authorPage = mongo.findAuthorPage(author.getAid());
+			if (authorPage != null) {
+				AuthorRank authorRank = authorService.createAuthorRank(author,papers);
 				try {
 					{
 						// 添加搜索索引
