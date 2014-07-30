@@ -24,9 +24,6 @@ public class AuthorService {
 	@Resource
 	private MongoService mongoService;
 
-	@Resource
-	private MysqlService mysqlService;
-
 	/**
 	 * 更新用户的论文等级
 	 * 
@@ -40,7 +37,15 @@ public class AuthorService {
 		}
 		return null;
 	}
-
+	
+	public AuthorPage createAuthorPage(String aid) {
+		Author a = mongoService.findAuthor(aid);
+		if (a != null) {
+			return createAuthorPage(a);
+		}
+		return null;
+	}
+	
 	public AuthorPage createAuthorPage(Author a) {
 		AuthorPage authorPage = (AuthorPage) SpringBeanFactory
 				.getBean("authorPage");
@@ -57,7 +62,7 @@ public class AuthorService {
 		authorPage.setYear(caculateFirstYear(a));
 		return authorPage;
 	}
-
+	
 	/**
 	 * 
 	 * 将作者对象作为传入创建用户的文章对象
@@ -118,7 +123,7 @@ public class AuthorService {
 		authorPaper.setAid(author.getAid());
 		return authorPaper;
 	}
-	
+
 	public AuthorRank createAuthorRank(String aid) {
 		Author author = mongoService.findAuthor(aid);
 		if (author != null) {
@@ -140,7 +145,7 @@ public class AuthorService {
 					papers.add(paper);
 				}
 			}
-		AuthorPaper authorPaper = mysqlService.findAuthorPaper(author.getAid());
+		AuthorPaper authorPaper = mongoService.findAuthorPaper(author.getAid());
 		if (authorPaper != null) {
 			authorRank.setApapers(authorPaper.getAconf()
 					+ authorPaper.getAjounal());
@@ -149,12 +154,12 @@ public class AuthorService {
 			authorRank.setApapers(0);
 			authorRank.setRank(0f);
 		}
-		authorRank.setYear(caculateFirstYear(author));
+		AuthorPage authorPage = mongoService.findAuthorPage(author.getAid());
+		authorRank.setYear(authorPage.getYear());
 		authorRank.setPapers(papers);
 		authorRank.setAid(author.getAid());
 		authorRank.setTags(author.getTags());
 		authorRank.setLocation(author.getCollege());
-
 		return authorRank;
 	}
 
@@ -164,9 +169,13 @@ public class AuthorService {
 		if (author.getPapers() != null) {
 			for (String pid : author.getPapers().keySet()) {
 				Paper paper = mongoService.findPaper(pid);
-				if (paper != null && paper.getDate() != null) {
+				if (paper != null && paper.getDate() != null
+						&& !paper.getDate().equals("")) {
 					String years = paper.getDate();
-					list.add(Integer.parseInt(years.substring(0, 4)));
+					if (years.length() > 4)
+						list.add(Integer.parseInt(years.substring(0, 4)));
+					else
+						list.add(Integer.parseInt(years));
 				}
 			}
 			Collections.sort(list, new Comparator() {
@@ -228,7 +237,6 @@ public class AuthorService {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
 	private float caculateRank(Author author, AuthorPaper authorPaper) {
 		float rank = 0.01f * author.getCiteindex() + 0.6f
 				* (authorPaper.getAconf() + authorPaper.getAjounal()) + 0.3f

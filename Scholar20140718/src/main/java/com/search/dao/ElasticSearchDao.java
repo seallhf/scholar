@@ -1,6 +1,9 @@
 package com.search.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -12,6 +15,7 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +92,41 @@ public class ElasticSearchDao {
 		return respons;
 	}
 
+	public SearchResponse findByScoreBase(String script, FilterBuilder filter,
+			QueryBuilder qb, long from, long size) {
+		SearchResponse respons;
+		if (filter != null) {
+			respons = client
+					.prepareSearch("authorrank")
+					.setTypes("authorrank")
+					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+					.setQuery(qb)
+					.setPostFilter(filter)
+					// .addSort("rank", SortOrder.DESC)
+					.addSort(
+							SortBuilders.scriptSort(script, "number")
+									.lang("mvel").order(SortOrder.DESC))
+					.setFrom(TypeCastUtil.castLong2Integer(from))
+					.setSize(TypeCastUtil.castLong2Integer(size)).execute()
+					.actionGet();
+			return respons;
+		} else {
+			respons = client
+					.prepareSearch("authorrank")
+					.setTypes("authorrank")
+					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+					.setQuery(qb)
+					// .addSort("rank", SortOrder.DESC)
+					.addSort(
+							SortBuilders.scriptSort(script, "number")
+									.lang("mvel").order(SortOrder.DESC))
+					.setFrom(TypeCastUtil.castLong2Integer(from))
+					.setSize(TypeCastUtil.castLong2Integer(size)).execute()
+					.actionGet();
+			return respons;
+		}
+	}
+
 	/**
 	 * 对列表进行重新排序
 	 * 
@@ -99,20 +138,9 @@ public class ElasticSearchDao {
 	public SearchResponse findByScoreDefault(String query,
 			Map<String, String> terms, long from, long size) {
 		String script = "doc.score * doc['rank'].value";
+		FilterBuilder filter = buildFilters(terms);
 		QueryBuilder qb = QueryBuilders.queryString(query);
-		SearchResponse respons = client
-				.prepareSearch("authorrank")
-				.setTypes("authorrank")
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(qb)
-				// .addSort("rank", SortOrder.DESC)
-				.addSort(
-						SortBuilders.scriptSort(script, "number").lang("mvel")
-								.order(SortOrder.DESC))
-				.setFrom(TypeCastUtil.castLong2Integer(from))
-				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
-				.actionGet();
-		return respons;
+		return findByScoreBase(script, filter, qb, from, size);
 	}
 
 	/**
@@ -126,25 +154,9 @@ public class ElasticSearchDao {
 	public SearchResponse findByScoreAType(String query,
 			Map<String, String> terms, long from, long size) {
 		String script = "doc['apapers'].value";
-		SortOrder order;
-		if(terms.get("order").equals("desc"))
-			order=SortOrder.DESC;
-		else
-			order=SortOrder.ASC;
+		FilterBuilder filter = buildFilters(terms);
 		QueryBuilder qb = QueryBuilders.queryString(query);
-		SearchResponse respons = client
-				.prepareSearch("authorrank")
-				.setTypes("authorrank")
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(qb)
-				// .addSort("rank", SortOrder.DESC)
-				.addSort(
-						SortBuilders.scriptSort(script, "number").lang("mvel")
-								.order(order))
-				.setFrom(TypeCastUtil.castLong2Integer(from))
-				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
-				.actionGet();
-		return respons;
+		return findByScoreBase(script, filter, qb, from, size);
 	}
 
 	/**
@@ -158,25 +170,9 @@ public class ElasticSearchDao {
 	public SearchResponse findByScoreYear(String query,
 			Map<String, String> terms, long from, long size) {
 		String script = "doc['year'].value";
-		SortOrder order;
-		if(terms.get("order").equals("desc"))
-			order=SortOrder.DESC;
-		else
-			order=SortOrder.ASC;
+		FilterBuilder filter = buildFilters(terms);
 		QueryBuilder qb = QueryBuilders.queryString(query);
-		SearchResponse respons = client
-				.prepareSearch("authorrank")
-				.setTypes("authorrank")
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(qb)
-				// .addSort("rank", SortOrder.DESC)
-				.addSort(
-						SortBuilders.scriptSort(script, "number").lang("mvel")
-								.order(order))
-				.setFrom(TypeCastUtil.castLong2Integer(from))
-				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
-				.actionGet();
-		return respons;
+		return findByScoreBase(script, filter, qb, from, size);
 	}
 
 	/**
@@ -186,12 +182,13 @@ public class ElasticSearchDao {
 	 * @return
 	 */
 	private FilterBuilder buildFilters(Map<String, String> terms) {
-		FilterBuilder filter = null;
-		for (String term : terms.keySet()) {
-			filter = FilterBuilders.andFilter(FilterBuilders.termFilter(term,
-					terms.get(term)));
+		FilterBuilder filterBuilder = null;
+		for (String field : terms.keySet()) {
+			String[] line = terms.get(field).split(",");
+			filterBuilder = FilterBuilders.termsFilter(field,
+					line).execution("or");
 		}
-		return filter;
+		return filterBuilder;
 	}
 
 	/**
@@ -247,10 +244,10 @@ public class ElasticSearchDao {
 	}
 
 	public static void main(String[] args) throws Exception {
-
 		ElasticSearchDao e = (ElasticSearchDao) SpringBeanFactory
 				.getBean("elasticSearchDao");
-		System.out.println(e.client);
+		Map<String, String> map = new HashMap<String, String>();
+
 	}
 
 }

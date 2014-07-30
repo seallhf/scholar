@@ -1,10 +1,5 @@
 package com.web.action.search;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
 import com.web.action.base.BaseAction;
 import com.web.pojo.Page;
@@ -14,18 +9,12 @@ import com.web.service.PageService;
 public class SearchAction extends BaseAction {
 
 	private String query;
-	private String sortBy;
+	private String sortby;
+	private String terms;
 
 	private int pno; // 查看的表单页数
 	private Page myPage;
-	private List<?> mylist;
 	private String stuName; // 传递的用户名
-
-	@Resource
-	private MongoService mongoService;
-
-	@Resource
-	private PageService pageService;
 
 	/**
 	 * @return the message
@@ -42,12 +31,15 @@ public class SearchAction extends BaseAction {
 		this.query = query.trim();
 	}
 
-	public String getSortBy() {
-		return sortBy;
+	public String getSortby() {
+		return sortby;
 	}
 
-	public void setSortBy(String sortBy) {
-		this.sortBy = sortBy;
+	public void setSortby(String sortby) {
+		if (sortby != null)
+			this.sortby = sortby;
+		else
+			this.sortby = "";
 	}
 
 	public String execute() {
@@ -55,29 +47,15 @@ public class SearchAction extends BaseAction {
 			return ERROR;
 		else {
 			setQuery(query);
+			setSortby(sortby);
 			if (pno == 0) {
 				pno = 1;
 			}
+			setTerms(terms);
 			PageService pageService = (PageService) SpringBeanFactory
 					.getBean("pageService");
-			pageService.init(pno, query, "default");
+			pageService.init(pno, query, sortby, terms);
 			myPage = pageService.getPage();
-			mylist = pageService.getPage().getList();
-			return SUCCESS;
-		}
-	}
-
-	public String filterSearch() {
-		if (query.equals(""))
-			return ERROR;
-		else {
-			setQuery(query);
-			if (pno == 0) {
-				pno = 1;
-			}
-			pageService.init(pno, query, "default");
-			myPage = pageService.getPage();
-			mylist = pageService.getPage().getList();
 			return SUCCESS;
 		}
 	}
@@ -104,14 +82,6 @@ public class SearchAction extends BaseAction {
 		this.myPage = myPage;
 	}
 
-	public List<?> getMylist() {
-		return mylist;
-	}
-
-	public void setMylist(List<?> mylist) {
-		this.mylist = mylist;
-	}
-
 	public String getStuName() {
 		return stuName;
 	}
@@ -120,4 +90,11 @@ public class SearchAction extends BaseAction {
 		this.stuName = stuName;
 	}
 
+	public String getTerms() {
+		return terms;
+	}
+
+	public void setTerms(String terms) {
+		this.terms = terms;
+	}
 }

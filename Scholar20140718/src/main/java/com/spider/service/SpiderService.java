@@ -30,7 +30,9 @@ public class SpiderService {
 		int i = 0;
 		for (String aid : authors.keySet()) {
 			if (aid != null && !aid.equals("")) {
-				spideAuthor(aid);
+				Integer index = (Integer) authors.get(aid).get("citeindex");
+				if (index < 1000)
+					spideAuthor(aid);
 				// break;
 			}
 			System.out.println((i++) + ":" + aid);

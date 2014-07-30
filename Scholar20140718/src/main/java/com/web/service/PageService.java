@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.search.service.SearchService;
 import com.utils.TypeCastUtil;
 import com.web.pojo.Page;
@@ -20,14 +21,14 @@ public class PageService {
 	@Resource
 	private SearchService searchService;
 
-	public void init(int start, String query, String sortBy) {
+	public void init(int start, String query, String sortBy,String terms) {
 		page = new Page();
 		this.start = start;
 		if (page.getList() == null) {
-			List<?> list = searchService.getAuthors(query, sortBy, start,
-					page.getPageSize());
+			List<?> list = searchService.getAuthors(query, sortBy, terms, start,
+					page.getPageSize());			
 			page.setList(list);
-			allcounts = searchService.getAllAuthorsCount(query);
+			allcounts = searchService.getFilterAuthorsCount(query, terms);
 		}
 		setRowCount(); // 设置page的总数量
 		setTotalPage(); // 设置page的总页数

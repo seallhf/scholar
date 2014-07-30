@@ -51,7 +51,7 @@ public class MongoDao {
 
 	public void update(String tableName, DBObject condition, DBObject dbo) {
 		mongoClient.getDB(dbName).getCollection(tableName)
-				.update(condition, dbo);
+				.update(condition, dbo, true, true);
 	}
 
 	public DBObject findById(String tableName, Object id) {
