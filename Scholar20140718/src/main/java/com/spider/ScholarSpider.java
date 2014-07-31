@@ -54,7 +54,7 @@ public class ScholarSpider {
 				"CP21yQEIkbbJAQiktskBCKm2yQEIwbbJAQiehsoBCLiIygE=");
 		header.put(
 				"cookie",
-				"PREF=ID=7a4885fa2516ec22:NW=1:TM=1404377596:LM=1404377596:S=5FiX8nNjLa1Y-i_v; GOOGLE_ABUSE_EXEMPTION=ID=10e7e01655f1ba12:TM=1406255879:C=c:IP=116.251.217.178-:S=APGng0vHeyhUkEfqGzEfRZoK3rh91IfgfA");
+				"PREF=ID=7a4885fa2516ec22:NW=1:TM=1404377596:LM=1404377596:S=5FiX8nNjLa1Y-i_v; GOOGLE_ABUSE_EXEMPTION=ID=6a088964cdb5da1e:TM=1406776451:C=c:IP=116.251.217.178-:S=APGng0t-N9AgNPo59KXbhY9QtbWJIiyFPg");
 		header.put("Host", "scholar.google.com.cn");
 		header.put("Connection", "keep-alive");
 		header.put("Accept-Encoding", "gzip,deflate,sdch");

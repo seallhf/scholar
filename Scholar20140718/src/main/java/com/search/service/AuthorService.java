@@ -150,10 +150,10 @@ public class AuthorService {
 	}
 
 	public AuthorRank createAuthorRank(Author author, List<Paper> papers) {
-		Map<String, String> paperList = author.getPapers();
 		AuthorRank authorRank = (AuthorRank) SpringBeanFactory
 				.getBean("authorRank");
 		if (papers == null) {
+			Map<String, String> paperList = author.getPapers();
 			papers = new ArrayList<Paper>();
 			if (paperList != null)
 				for (String pid : paperList.keySet()) {
@@ -161,6 +161,14 @@ public class AuthorService {
 					paper.setDate("1900/11/11");
 					papers.add(paper);
 				}
+		} else {
+			List<Paper> paperList = new ArrayList<Paper>();
+			papers = new ArrayList<Paper>();
+			for (Paper paper : papers) {
+				paper.setDate("1900/11/11");
+				paperList.add(paper);
+			}
+			papers = paperList;
 		}
 		AuthorPaper authorPaper = mongoService.findAuthorPaper(author.getAid());
 		if (authorPaper != null) {

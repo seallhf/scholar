@@ -103,7 +103,7 @@ public class SpiderService {
 
 	public static void main(String[] args) throws IOException {
 		SpiderService service = (SpiderService) SpringBeanFactory
-				.getBean("spiderService");
+				.getBean("spiderService"); 
 		service.getNewAuthors();
 	}
 }
