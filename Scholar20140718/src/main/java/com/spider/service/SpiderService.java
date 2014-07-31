@@ -86,10 +86,17 @@ public class SpiderService {
 	public void getNewAuthor(String id) {
 		if (id != null) {
 			if (mongo.findAuthor(id) == null) {
-				// 向数据库添加抓取的用户和文章数据,并添加索引,写在spider中
+				// 向数据库添加抓取的用户和文章数据,
+				// 并添加索引,写在spider中
 				Author a = spideAuthor(id);
 				// 向索引数据库添加缩影数据
 				// index.updateIndex(a);
+			}
+			else 
+			{
+				//爬虫数据库中已经存在的数据，对其进行索引的添加
+				Author a = mongo.findAuthor(id);
+				index.updateIndex(a);
 			}
 		}
 	}

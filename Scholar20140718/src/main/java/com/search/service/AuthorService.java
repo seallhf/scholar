@@ -158,10 +158,8 @@ public class AuthorService {
 			if (paperList != null)
 				for (String pid : paperList.keySet()) {
 					Paper paper = mongoService.findPaper(pid);
-					if (paper != null) {
-						paper.setDate("1000/11/11");
-						papers.add(paper);
-					}
+					paper.setDate("1900/11/11");
+					papers.add(paper);
 				}
 		}
 		AuthorPaper authorPaper = mongoService.findAuthorPaper(author.getAid());

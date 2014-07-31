@@ -1,12 +1,10 @@
 package com.search.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -15,7 +13,6 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,16 +77,13 @@ public class ElasticSearchDao {
 	 * @param size
 	 * @return
 	 */
-	public SearchResponse findByField(String query, String field, long from,
-			long size) {
-		QueryBuilder qb = QueryBuilders.matchQuery(field, query);
-		SearchResponse respons = client.prepareSearch("authorrank")
-				.setTypes("authorrank")
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(qb)
-				.setFrom(TypeCastUtil.castLong2Integer(from))
-				.setSize(TypeCastUtil.castLong2Integer(size)).execute()
-				.actionGet();
-		return respons;
+	public long findByField(String query, String field) {
+		QueryBuilder qb = QueryBuilders.matchQuery(query,field);
+		CountResponse response = client.prepareCount("authorrank")
+		        .setQuery(qb)
+		        .execute()
+		        .actionGet();;
+		return response.getCount();
 	}
 
 	public SearchResponse findByScoreBase(String script, FilterBuilder filter,
@@ -246,8 +240,7 @@ public class ElasticSearchDao {
 	public static void main(String[] args) throws Exception {
 		ElasticSearchDao e = (ElasticSearchDao) SpringBeanFactory
 				.getBean("elasticSearchDao");
-		Map<String, String> map = new HashMap<String, String>();
-
+		System.out.println(e.findByField("aid", "c67TSZsAAAAJ"));
 	}
 
 }

@@ -51,6 +51,7 @@ public class IndexService {
 	 * @param author
 	 */
 	public void updateIndex(Author author) {
+		//没有添加页面数据时，添加功能
 		if (mongo.findAuthorPaper(author.getAid()) == null) {
 			// 创建AuthorPaper并插务数据库
 			mongo.insertAuthorPaper(authorService.createAuthorPaper(author,
@@ -58,10 +59,13 @@ public class IndexService {
 			// 创建AuthorPage并插入数据库
 			mongo.insertAuthorPage(authorService.createAuthorPage(author, null));
 		}
-		if (author.getAid() != null) {
+		//没有添加检索索引，添加索引记录
+		if (author.getAid() != null
+				&& elastic.findByField("aid", author.getAid()) == 0) {
 			AuthorPage authorPage = mongo.findAuthorPage(author.getAid());
 			if (authorPage != null) {
-				AuthorRank authorRank = authorService.createAuthorRank(author,null);
+				AuthorRank authorRank = authorService.createAuthorRank(author,
+						null);
 				try {
 					{
 						// 添加搜索索引
@@ -79,17 +83,21 @@ public class IndexService {
 	 * 
 	 * @param author
 	 */
-	public void updateIndex(Author author,List<Paper> papers) {
+	public void updateIndex(Author author, List<Paper> papers) {
 		if (mongo.findAuthorPaper(author.getAid()) == null) {
 			// 创建AuthorPaper并插务数据库
-			mongo.insertAuthorPaper(authorService.createAuthorPaper(author,papers));
+			mongo.insertAuthorPaper(authorService.createAuthorPaper(author,
+					papers));
 			// 创建AuthorPage并插入数据库
-			mongo.insertAuthorPage(authorService.createAuthorPage(author,papers));
+			mongo.insertAuthorPage(authorService.createAuthorPage(author,
+					papers));
 		}
 		if (author.getAid() != null) {
 			AuthorPage authorPage = mongo.findAuthorPage(author.getAid());
-			if (authorPage != null) {
-				AuthorRank authorRank = authorService.createAuthorRank(author,papers);
+			if (authorPage != null
+					&& elastic.findByField(author.getAid(), "aid") == 0) {
+				AuthorRank authorRank = authorService.createAuthorRank(author,
+						papers);
 				try {
 					{
 						// 添加搜索索引
