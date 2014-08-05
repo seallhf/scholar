@@ -15,7 +15,7 @@ public class AuthorRank {
 	private int apapers;
 	
 	//作者的第一篇文章年份
-	private int year;
+	private String year;
 
 	private List<Paper> papers;
 	
@@ -71,11 +71,11 @@ public class AuthorRank {
 		this.apapers = apapers;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(int year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 	

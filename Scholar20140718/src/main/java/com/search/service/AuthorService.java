@@ -46,6 +46,7 @@ public class AuthorService {
 	 * @return
 	 */
 	public AuthorPaper createAuthorPaper(Author author, List<Paper> papers) {
+		long start=System.currentTimeMillis();
 		AuthorPaper authorPaper = (AuthorPaper) SpringBeanFactory
 				.getBean("authorPaper");
 		int aconf = 0, bconf = 0, cconf = 0;
@@ -102,6 +103,7 @@ public class AuthorService {
 		authorPaper.setCconf(cconf);
 		authorPaper.setCjounal(cjounal);
 		authorPaper.setAid(author.getAid());
+		System.out.println("create authorPaper cost "+(System.currentTimeMillis() - start)+" ms");
 		return authorPaper;
 	}
 
@@ -114,6 +116,7 @@ public class AuthorService {
 	}
 
 	public AuthorPage createAuthorPage(Author a, List<Paper> papers) {
+		long start = System.currentTimeMillis();
 		AuthorPage authorPage = (AuthorPage) SpringBeanFactory
 				.getBean("authorPage");
 		if (papers == null) {
@@ -138,6 +141,7 @@ public class AuthorService {
 		authorPage.setName(a.getName());
 		authorPage.setTags(a.getTags());
 		authorPage.setYear(caculateFirstYear(papers));
+		System.out.println("create authorPage cost "+(System.currentTimeMillis() - start)+" ms");
 		return authorPage;
 	}
 
@@ -150,6 +154,7 @@ public class AuthorService {
 	}
 
 	public AuthorRank createAuthorRank(Author author, List<Paper> papers) {
+		long start = System.currentTimeMillis();
 		AuthorRank authorRank = (AuthorRank) SpringBeanFactory
 				.getBean("authorRank");
 		if (papers == null) {
@@ -185,11 +190,12 @@ public class AuthorService {
 		authorRank.setAid(author.getAid());
 		authorRank.setTags(author.getTags());
 		authorRank.setLocation(author.getCollege());
+		System.out.println("create authorRank cost "+(System.currentTimeMillis() - start)+" ms");
 		return authorRank;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private int caculateFirstYear(List<Paper> papers) {
+	private String caculateFirstYear(List<Paper> papers) {
 		List<Integer> list = new ArrayList<Integer>();
 		if (papers != null) {
 			for (Paper paper : papers) {
@@ -209,10 +215,10 @@ public class AuthorService {
 				}
 			});
 			if (list.size() > 0)
-				return list.get(0);
-			return 1900;
+				return String.valueOf(list.get(0));
+			return "未知";
 		}
-		return 1900;
+		return "未知";
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

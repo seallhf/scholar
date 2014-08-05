@@ -54,7 +54,7 @@ public class ScholarSpider {
 				"CP21yQEIkbbJAQiktskBCKm2yQEIwbbJAQiehsoBCLiIygE=");
 		header.put(
 				"cookie",
-				"PREF=ID=7a4885fa2516ec22:NW=1:TM=1404377596:LM=1404377596:S=5FiX8nNjLa1Y-i_v; GOOGLE_ABUSE_EXEMPTION=ID=6a088964cdb5da1e:TM=1406776451:C=c:IP=116.251.217.178-:S=APGng0t-N9AgNPo59KXbhY9QtbWJIiyFPg");
+				"GSP=ID=7a0b905d571ed94f:LM=1406876542:S=o7KPkQyC2qGQHYdc; PREF=ID=7a0b905d571ed94f:TM=1406876542:LM=1406876542:S=7Th_6FkodKAXj41r; GOOGLE_ABUSE_EXEMPTION=ID=1a29c8a569c4e77a:TM=1407133190:C=c:IP=116.251.217.178-:S=APGng0uW4QD0totJ3QQtFJO-OMXJ1II-dA");
 		header.put("Host", "scholar.google.com.cn");
 		header.put("Connection", "keep-alive");
 		header.put("Accept-Encoding", "gzip,deflate,sdch");
@@ -204,8 +204,8 @@ public class ScholarSpider {
 			Map<String, String> lists = new HashMap<String, String>();
 			Elements e = page.getElementsByAttributeValue("class",
 					"cit-table item");
-			for (Element paper : e) {
-				String line = paper.getElementsByTag("a").first().attr("href");
+			for (Element table : e) {
+				String line = table.getElementsByTag("a").first().attr("href");
 				Pattern p = Pattern.compile(authorId + "\\:.+");
 				Matcher m = p.matcher(line);
 				String urlId = "";
@@ -213,16 +213,17 @@ public class ScholarSpider {
 					// System.out.println(m.group().replaceAll(id + "\\:", ""));
 					urlId = m.group().replaceAll(authorId + "\\:", "");
 				}
-				String title = paper.getElementsByTag("a").first().text();
+				String title = table.getElementsByTag("a").first().text();
 				lists.put(MD5Util.MD5(title), urlId);
-				Paper _paper = getPaperDetail(paper, authorId, urlId);
-				papers.add(_paper);
-				if (_paper != null && mongo.findPaper(_paper.getPid()) == null) {
-					mongo.insertPaper(_paper);
-					System.out.println(authorId + ":" + _paper.getPid()
+				//Paper paper = (Paper)SpringBeanFactory.getBean("paper");
+				Paper paper = getPaperDetail(table, authorId, urlId);
+				papers.add(paper);
+				if (paper != null && mongo.findPaper(paper.getPid()) == null) {
+					mongo.insertPaper(paper);
+					System.out.println(authorId + ":" + paper.getPid()
 							+ "----->" + "inserted");
 				} else
-					System.out.println(authorId + ":" + _paper.getPid());
+					System.out.println(authorId + ":" + paper.getPid());
 			}
 			int i = 2;
 			boolean stop = false;
@@ -236,8 +237,8 @@ public class ScholarSpider {
 				page = Jsoup.parse(html);
 				e = page.getElementsByAttributeValue("class", "cit-table item");
 				if (e.size() != 0) {
-					for (Element paper : e) {
-						String line = paper.getElementsByTag("a").first()
+					for (Element table : e) {
+						String line = table.getElementsByTag("a").first()
 								.attr("href");
 						Pattern p = Pattern.compile(authorId + "\\:.+");
 						Matcher m = p.matcher(line);
@@ -248,19 +249,20 @@ public class ScholarSpider {
 							urlId = m.group().replaceAll(authorId + "\\:", "");
 
 						}
-						String title = paper.getElementsByTag("a").first()
+						String title = table.getElementsByTag("a").first()
 								.text();
 						lists.put(MD5Util.MD5(title), urlId);
-						Paper _paper = getPaperDetail(paper, authorId, urlId);
-						papers.add(_paper);
-						if (_paper != null
-								&& mongo.findPaper(_paper.getPid()) == null) {
-							mongo.insertPaper(_paper);
+						//Paper paper = (Paper)SpringBeanFactory.getBean("paper");
+						Paper paper = getPaperDetail(table, authorId, urlId);
+						papers.add(paper);
+						if (paper != null
+								&& mongo.findPaper(paper.getPid()) == null) {
+							mongo.insertPaper(paper);
 							System.out
-									.println(authorId + ":" + _paper.getPid()+ "----->" + "inserted");
+									.println(authorId + ":" + paper.getPid()+ "----->" + "inserted");
 						} else
 							System.out
-									.println(authorId + ":" + _paper.getPid());
+									.println(authorId + ":" + paper.getPid());
 					}
 				} else
 					stop = true;
@@ -429,9 +431,8 @@ public class ScholarSpider {
 		}
 	}
 
-	@SuppressWarnings("static-access")
 	public Paper getPaperDetail(Element table, String authorId, String urlId) {
-		Paper paper = (Paper) SpringBeanFactory.getBean("paper");
+		Paper paper = new Paper();
 		Element e = table.getElementById("col-title");
 		paper.setTitle(e.getElementsByTag("a").first().text());
 		paper.setPid(MD5Util.MD5(paper.getTitle()));

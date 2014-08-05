@@ -45,7 +45,7 @@ public class MongoService {
 	public Map<String, DBObject> getAllAuthor() {
 		return mongoDao.find(AUTHOR, "aid");
 	}
-	
+
 	public List<String> getAllAuthorId() {
 		return mongoDao.findIds(AUTHOR, "aid");
 	}
@@ -165,14 +165,16 @@ public class MongoService {
 	 * @param updateField
 	 * @param newPaper
 	 */
-	public void updateAuthorPageData(String aid, String updateField,
+	public void updateAuthorPageData(String aid, String[] updateFields,
 			AuthorPage authorPage) {
 		DBObject updateCondition = new BasicDBObject();
 		// where name='fox'
 		updateCondition.put("aid", aid);
 		DBObject updatedValue = new BasicDBObject();
-		updatedValue.put(updateField,
-				((JSONObject) JSONObject.toJSON(authorPage)).get(updateField));
+		for (String updateField : updateFields) {
+			updatedValue.put(updateField, ((JSONObject) JSONObject
+					.toJSON(authorPage)).get(updateField));
+		}
 		DBObject updatedSetValue = new BasicDBObject("$set", updatedValue);
 		mongoDao.update(AUTHORPAGE, updateCondition, updatedSetValue);
 	}
@@ -212,6 +214,6 @@ public class MongoService {
 	}
 
 	public static void main(String[] args) throws Exception {
-		
+
 	}
 }

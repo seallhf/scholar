@@ -22,7 +22,7 @@ public class AuthorPage {
 	private Integer citeindex;
 
 	// 最早发表论文的日期
-	private Integer year;
+	private String year;
 
 	// 有合作关系的大节点
 	private String coBigAuthors;
@@ -99,11 +99,11 @@ public class AuthorPage {
 		this.citeindex = citeindex;
 	}
 
-	public Integer getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(Integer year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 

@@ -111,9 +111,10 @@ public class IndexService {
 	}
 
 	public static void main(String[] args) {
-		IndexService index = (IndexService) SpringBeanFactory
-				.getBean("indexService");
-		index.updateIndex();
+		AuthorService authorService = (AuthorService) SpringBeanFactory
+				.getBean("authorService");
+		AuthorPage rank = authorService.createAuthorPage("Iss3wgUAAAAJ",null);
+		System.out.println("");
 		// index.updateAuthorPaper("pGsO6EkAAAAJ");
 	}
 

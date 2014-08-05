@@ -99,7 +99,7 @@ public class MysqlDao {
 			authorPage.setCiteindex(rs.getInt("citeindex"));
 			authorPage.setCoBigAuthors(rs.getString("big_coauthor_id"));
 			authorPage.setMostFarmousPaper(rs.getString("famous_paper_id"));
-			authorPage.setYear(rs.getInt("year"));
+			authorPage.setYear(String.valueOf(rs.getInt("year")));
 			authorPage.setHomePage(rs.getString("home_page"));
 			authorPage.setImgUrl(rs.getString("img_url"));
 			return authorPage;
