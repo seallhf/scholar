@@ -1,12 +1,11 @@
-package com.pojo;
-
-import java.util.List;
-import java.util.Map;
+package com.search.pojo;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class Author {
+public class AuthorPage {
+
+	private Integer id;
 
 	private String imgUrl;
 
@@ -22,12 +21,35 @@ public class Author {
 
 	private Integer citeindex;
 
-	private List<String> coAuthors;
+	// 最早发表论文的日期
+	private String year;
 
-	// google中论文的访问地址列表
-	private Map<String, String> papers;
+	// 有合作关系的大节点
+	private String coBigAuthors;
+
+	// 最有影响力的论文
+	private String famousPaper;
 
 	private String homePage;
+
+	// 是否是一个年轻的学者
+	private boolean isYoungEnough;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
 
 	public String getAid() {
 		return aid;
@@ -77,20 +99,28 @@ public class Author {
 		this.citeindex = citeindex;
 	}
 
-	public List<String> getCoAuthors() {
-		return coAuthors;
+	public String getYear() {
+		return year;
 	}
 
-	public void setCoAuthors(List<String> coAuthors) {
-		this.coAuthors = coAuthors;
+	public void setYear(String year) {
+		this.year = year;
 	}
 
-	public Map<String, String> getPapers() {
-		return papers;
+	public String getCoBigAuthors() {
+		return coBigAuthors;
 	}
 
-	public void setPapers(Map<String, String> papers) {
-		this.papers = papers;
+	public void setCoBigAuthors(String coBigAuthors) {
+		this.coBigAuthors = coBigAuthors;
+	}
+
+	public String getMostFarmousPaper() {
+		return famousPaper;
+	}
+
+	public void setMostFarmousPaper(String famousPaper) {
+		this.famousPaper = famousPaper;
 	}
 
 	public String getHomePage() {
@@ -101,11 +131,11 @@ public class Author {
 		this.homePage = homePage;
 	}
 
-	public String getImgUrl() {
-		return imgUrl;
+	public boolean isYoungEnough() {
+		return isYoungEnough;
 	}
 
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
+	public void setYoungEnough(boolean isYoungEnough) {
+		this.isYoungEnough = isYoungEnough;
 	}
 }

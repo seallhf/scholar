@@ -1,11 +1,12 @@
-package com.pojo;
+package com.spider.pojo;
+
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthorPage {
-
-	private Integer id;
+public class Author {
 
 	private String imgUrl;
 
@@ -21,35 +22,12 @@ public class AuthorPage {
 
 	private Integer citeindex;
 
-	// 最早发表论文的日期
-	private String year;
+	private List<String> coAuthors;
 
-	// 有合作关系的大节点
-	private String coBigAuthors;
-
-	// 最有影响力的论文
-	private String famousPaper;
+	// google中论文的访问地址列表
+	private Map<String, String> papers;
 
 	private String homePage;
-
-	// 是否是一个年轻的学者
-	private boolean isYoungEnough;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getImgUrl() {
-		return imgUrl;
-	}
-
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
-	}
 
 	public String getAid() {
 		return aid;
@@ -99,28 +77,20 @@ public class AuthorPage {
 		this.citeindex = citeindex;
 	}
 
-	public String getYear() {
-		return year;
+	public List<String> getCoAuthors() {
+		return coAuthors;
 	}
 
-	public void setYear(String year) {
-		this.year = year;
+	public void setCoAuthors(List<String> coAuthors) {
+		this.coAuthors = coAuthors;
 	}
 
-	public String getCoBigAuthors() {
-		return coBigAuthors;
+	public Map<String, String> getPapers() {
+		return papers;
 	}
 
-	public void setCoBigAuthors(String coBigAuthors) {
-		this.coBigAuthors = coBigAuthors;
-	}
-
-	public String getMostFarmousPaper() {
-		return famousPaper;
-	}
-
-	public void setMostFarmousPaper(String famousPaper) {
-		this.famousPaper = famousPaper;
+	public void setPapers(Map<String, String> papers) {
+		this.papers = papers;
 	}
 
 	public String getHomePage() {
@@ -131,11 +101,11 @@ public class AuthorPage {
 		this.homePage = homePage;
 	}
 
-	public boolean isYoungEnough() {
-		return isYoungEnough;
+	public String getImgUrl() {
+		return imgUrl;
 	}
 
-	public void setYoungEnough(boolean isYoungEnough) {
-		this.isYoungEnough = isYoungEnough;
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
 	}
 }

@@ -10,8 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.pojo.AuthorPage;
-import com.pojo.AuthorPaper;
+import com.search.pojo.AuthorPage;
+import com.search.pojo.AuthorPaper;
 import com.utils.spring.SpringBeanFactory;
 
 @Repository

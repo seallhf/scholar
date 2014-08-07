@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pojo.AuthorRank;
+import com.search.pojo.AuthorRank;
 import com.utils.TypeCastUtil;
 import com.utils.spring.SpringBeanFactory;
 
@@ -180,7 +180,7 @@ public class ElasticSearchDao {
 		for (String field : terms.keySet()) {
 			String[] line = terms.get(field).split(",");
 			filterBuilder = FilterBuilders.termsFilter(field,
-					line).execution("or");
+					line).execution("and");
 		}
 		return filterBuilder;
 	}

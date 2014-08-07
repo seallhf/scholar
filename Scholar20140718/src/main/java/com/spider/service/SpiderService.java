@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.DBObject;
-import com.pojo.Author;
-import com.pojo.AuthorPage;
-import com.pojo.Paper;
+import com.search.pojo.AuthorPage;
 import com.search.service.AuthorService;
 import com.search.service.IndexService;
 import com.spider.ScholarSpider;
+import com.spider.pojo.Author;
+import com.spider.pojo.Paper;
 import com.utils.spring.SpringBeanFactory;
 
 @Service

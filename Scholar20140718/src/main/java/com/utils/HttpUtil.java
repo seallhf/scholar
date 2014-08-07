@@ -168,7 +168,7 @@ public class HttpUtil {
 	}
 
 	public static String post(String url, Map<String, String> params,
-			Map<String, String> header) throws ClientProtocolException,
+			Map<String, String> header,long sleeptime) throws ClientProtocolException,
 			IOException {
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		String body = null;
@@ -180,7 +180,7 @@ public class HttpUtil {
 			post.setHeader(name, header.get(name));
 		}
 
-		body = invoke(httpclient, post);
+		body = invoke(httpclient, post,sleeptime);
 
 		httpclient.getConnectionManager().shutdown();
 
@@ -188,7 +188,7 @@ public class HttpUtil {
 	}
 
 	public static String post(String url, String JSONparams,
-			Map<String, String> header) throws ClientProtocolException,
+			Map<String, String> header,long sleeptime) throws ClientProtocolException,
 			IOException {
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		String body = null;
@@ -200,14 +200,14 @@ public class HttpUtil {
 			post.setHeader(name, header.get(name));
 		}
 
-		body = invoke(httpclient, post);
+		body = invoke(httpclient, post,sleeptime);
 
 		httpclient.getConnectionManager().shutdown();
 
 		return body;
 	}
 
-	public static String get(String url, Map<String, String> header)
+	public static String get(String url, Map<String, String> header,long sleeptime)
 			throws ClientProtocolException, IOException {
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		// httpclient.getCredentialsProvider().setCredentials(new
@@ -224,7 +224,7 @@ public class HttpUtil {
 		for (String name : header.keySet()) {
 			get.setHeader(name, header.get(name));
 		}
-		body = invoke(httpclient, get);
+		body = invoke(httpclient, get,sleeptime);
 		httpclient.getConnectionManager().shutdown();
 		return body;
 	}
@@ -232,7 +232,7 @@ public class HttpUtil {
 	static HttpResponse response;
 
 	private static String invoke(DefaultHttpClient httpclient,
-			final HttpUriRequest httpost) throws ClientProtocolException,
+			final HttpUriRequest httpost, long sleeptime) throws ClientProtocolException,
 			IOException {
 		final DecompressingHttpClient httpClientNew = new DecompressingHttpClient(
 				httpclient);// 避免返回compressed格式的Entity出现乱码
@@ -255,7 +255,7 @@ public class HttpUtil {
 		};
 		hth.start();
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(sleeptime);
 			if (response == null) {
 				hth.interrupt();
 				return "";

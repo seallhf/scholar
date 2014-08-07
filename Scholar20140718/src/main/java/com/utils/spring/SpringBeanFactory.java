@@ -3,8 +3,6 @@ package com.utils.spring;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.pojo.Paper;
-
 public class SpringBeanFactory {
 
 	@SuppressWarnings("unused")
@@ -19,7 +17,6 @@ public class SpringBeanFactory {
 	}
 
 	public static void main(String[] args) {
-		System.out.println((Paper)SpringBeanFactory.getBean("paper"));
 	}
 
 }

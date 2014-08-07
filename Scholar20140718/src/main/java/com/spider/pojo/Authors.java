@@ -1,9 +1,10 @@
-package com.pojo;
+package com.spider.pojo;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
+
+import com.search.pojo.AuthorPaper;
 
 //数据库导入完成后需删除
 @Component

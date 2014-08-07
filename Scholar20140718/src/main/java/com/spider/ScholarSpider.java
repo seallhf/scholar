@@ -21,9 +21,9 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import com.nlp.CCFComparation;
-import com.pojo.Author;
-import com.pojo.Paper;
 import com.search.service.IndexService;
+import com.spider.pojo.Author;
+import com.spider.pojo.Paper;
 import com.spider.service.MongoService;
 import com.utils.HttpUtil;
 import com.utils.IOUtil;
@@ -46,6 +46,8 @@ public class ScholarSpider {
 
 	private Map<String, String> header = new HashMap<String, String>();
 
+	private final long sleeptime = 3000;
+	
 	/**
 	 * HttpRequest header 拼接HTTP头参数
 	 */
@@ -144,10 +146,10 @@ public class ScholarSpider {
 			if (url == null)
 				html = HttpUtil
 						.get("http://scholar.google.com.cn/citations?view_op=search_authors&hl=zh-CN&mauthors="
-								+ query, getHeader());
+								+ query, getHeader(),sleeptime);
 			else
 				html = HttpUtil.get("http://scholar.google.com.cn" + url,
-						getHeader());
+						getHeader(),sleeptime);
 			return html;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -167,7 +169,7 @@ public class ScholarSpider {
 			List<String> candidatesList = new ArrayList<String>();
 			String html = HttpUtil.get(
 					"http://scholar.google.com.cn/citations?view_op=list_colleagues&user="
-							+ authorId, getHeader());
+							+ authorId, getHeader(),sleeptime);
 			IOUtil.write2File("d:/1.txt", html);
 			Document page = Jsoup.parse(html);
 			Elements candidates = page.getElementsByAttributeValue("style",
@@ -232,7 +234,7 @@ public class ScholarSpider {
 						"http://scholar.google.com.cn/citations?user="
 								+ authorId
 								+ "&pagesize=100&view_op=list_works&cstart="
-								+ (i * 100), getHeader());
+								+ (i * 100), getHeader(),sleeptime);
 				i++;
 				page = Jsoup.parse(html);
 				e = page.getElementsByAttributeValue("class", "cit-table item");
@@ -289,7 +291,7 @@ public class ScholarSpider {
 			String html = HttpUtil.get(
 					"http://scholar.google.com.cn/citations?user="
 							+ candidateId + "&pagesize=100&view_op=list_works",
-					getHeader());
+					getHeader(),sleeptime);
 			Integer year = 0;
 			Document page = Jsoup.parse(html);
 			Element e = page.getElementsByAttributeValue("class",
@@ -336,7 +338,7 @@ public class ScholarSpider {
 		try {
 			html = HttpUtil.get("http://scholar.google.com.cn/citations?user="
 					+ authorId + "&pagesize=100&view_op=list_works",
-					getHeader());
+					getHeader(),sleeptime);
 			page = Jsoup.parse(html);
 			Element title = page.getElementsByClass("cit-user-info").first();
 			Pattern p = Pattern.compile("user=.+?\\&");
@@ -483,7 +485,7 @@ public class ScholarSpider {
 					+ "&pagesize=100&citation_for_view="
 					+ authorId
 					+ ":" + paperId;
-			html = HttpUtil.get(url, getHeader());
+			html = HttpUtil.get(url, getHeader(),sleeptime);
 			Document page = Jsoup.parse(html);
 			try {
 				paper.setTitle(page.getElementsByAttributeValue("id", "title")

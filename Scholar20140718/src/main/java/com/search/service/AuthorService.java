@@ -10,11 +10,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.pojo.Author;
-import com.pojo.AuthorPage;
-import com.pojo.AuthorPaper;
-import com.pojo.AuthorRank;
-import com.pojo.Paper;
+import com.search.pojo.AuthorPage;
+import com.search.pojo.AuthorPaper;
+import com.search.pojo.AuthorRank;
+import com.spider.pojo.Author;
+import com.spider.pojo.Paper;
 import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
 

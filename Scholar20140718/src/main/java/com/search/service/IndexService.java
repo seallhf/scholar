@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.DBObject;
-import com.pojo.Author;
-import com.pojo.AuthorPage;
-import com.pojo.AuthorRank;
-import com.pojo.Paper;
 import com.search.dao.ElasticSearchDao;
+import com.search.pojo.AuthorPage;
+import com.search.pojo.AuthorRank;
+import com.spider.pojo.Author;
+import com.spider.pojo.Paper;
 import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
 

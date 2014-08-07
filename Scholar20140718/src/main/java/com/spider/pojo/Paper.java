@@ -1,4 +1,4 @@
-package com.pojo;
+package com.spider.pojo;
 
 import org.springframework.stereotype.Component;
 

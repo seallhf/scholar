@@ -1,8 +1,10 @@
-package com.pojo;
+package com.search.pojo;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+
+import com.spider.pojo.Paper;
 
 @Component
 public class AuthorRank {

@@ -1,6 +1,6 @@
 package com.web.action.search;
 
-import com.pojo.AuthorPaper;
+import com.search.pojo.AuthorPaper;
 import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
 import com.web.action.base.BaseAction;

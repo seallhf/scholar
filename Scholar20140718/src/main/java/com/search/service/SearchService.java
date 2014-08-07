@@ -16,8 +16,8 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.stereotype.Service;
 
-import com.pojo.AuthorPage;
 import com.search.dao.ElasticSearchDao;
+import com.search.pojo.AuthorPage;
 import com.spider.service.MongoService;
 
 @Service

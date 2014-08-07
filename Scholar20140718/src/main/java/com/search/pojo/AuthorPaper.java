@@ -1,34 +1,32 @@
-package com.pojo;
+package com.search.pojo;
 
-/**
- * 不同领域中发表的论文情况
- * @author seal
- */
 import org.springframework.stereotype.Component;
 
-@Component
-public class PaperType {
 
-	private String domain;
+/**
+ * 用户的全部论文发表情况
+ * @author seal
+ *
+ */
+@Component
+public class AuthorPaper {
+
+	private String aid;
 
 	private int aconf;
 
 	private int bconf;
 
 	private int cconf;
-
+	
 	private int ajounal;
 
 	private int bjounal;
 
 	private int cjounal;
 
-	public String getDomain() {
-		return domain;
-	}
-
-	public void setDomain(String domain) {
-		this.domain = domain;
+	public String getAid() {
+		return aid;
 	}
 
 	public int getAconf() {
@@ -78,5 +76,11 @@ public class PaperType {
 	public void setCjounal(int cjounal) {
 		this.cjounal = cjounal;
 	}
+
+	public void setAid(String aid) {
+		this.aid = aid;
+	}
+
+	
 
 }

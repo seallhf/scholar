@@ -54,7 +54,7 @@
 			<hr style="margin-bottom: 0; margin-top: 0;" />
 			<div class="search_classification_left_block">职位</div>
 			<hr style="margin-bottom: 0; margin-top: 0;" />
-			<div class="search_classification_left_block">领域</div>
+			<div class="search_classification_left_block">机构</div>
 		</div>
 		<div class="search_classification_right">
 			<div class="search_classification_right_block">

@@ -47,7 +47,7 @@ public class SearchClassificationAction extends BaseAction {
 		SearchService search = (SearchService) SpringBeanFactory
 				.getBean("searchService");
 		List<String> company = Arrays.asList(new String[]{"microsoft","google","ibm","facebook","apple"});
-		List<String> position = Arrays.asList(new String[]{"Ph.D","Dr","researcher","professor"});
+		List<String> position = Arrays.asList(new String[]{"phd","researcher","professor"});
 		List<String> system = Arrays.asList(new String[]{"beijing university","tinghua university","chinese academy of sciences"});
 		Map<String,List<String>> maps = new HashMap<String,List<String>>();
 		maps.put("company", company);
