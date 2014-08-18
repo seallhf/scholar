@@ -1,0 +1,364 @@
+/* written by dym 2014/8/5 */
+
+/* header */
+.header{
+	background:#fff url(../img/headerbackground-01.png) left top repeat-x;
+	height:50px;
+}
+.header-middle-content{
+	width:1002px;
+	color:#fff;
+	margin:0 auto;
+}
+.header-middle-content div, .header-middle-content a{
+	display:inline-block;
+}
+.header-img-left{
+	margin-top:4px;
+}
+.header-middle-rnav{
+	margin-right:15px;
+	margin-top:15px;
+	float:right;
+}
+.header-img-right{
+	float:right;
+	margin-top:16px;
+}
+
+/* search css*/
+.content{
+	width:1002px;
+	margin:0 auto;
+	height:800px;
+}
+.form-search-css div, .form-search-css form{
+	margin-top:10px;
+	margin-bottom:20px;
+}
+
+.top-img-css{
+	float:left;
+}
+.conditions-search-css{
+	clear:both;
+}
+
+/* 多条件选择样式 */
+.conditions-search-css{
+	border-top:1px solid #ccc;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	margin-bottom:20px;
+}
+.single-condition-css{
+	border-bottom:1px solid #ccc;
+	height:35px;
+}
+.single-condition-css div{
+	/* margin-right:20px; */
+	display:inline-block;
+	line-height:25px;
+	padding:5px 15px;
+}
+.single-condition-css ul{
+	display:inline-block;
+}
+.single-condition-css ul li{
+	margin-right:15px;
+	width:140px;
+}
+.single-condition-css ul li a{ /*多余内容隐藏并以省略号代替*/
+	max-width:80px;
+	overflow:hidden; 
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	display:inline-block;
+}
+.single-condition-css ul li span{ /*使其不下掉*/
+	display:inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.conditions-search-css div ul li:hover{
+	background-color:#0071bf;
+	color:#fff;
+	cursor:pointer;
+}
+.more-show-css{
+	cursor:pointer;
+	float:right;
+}
+.more-show-css:hover{
+	color:#0071bf;
+}
+.selected-li{
+	width: 83%;
+	padding: 10px;
+}
+.inite-ul-css{
+	max-height:16px;
+	overflow:hidden;
+}
+.more-ul-css{
+	max-height:48px;
+	overflow-y: auto;
+}
+
+/* 按条件排序 */
+.sequencing-results-css{
+	background-color:#d3e7f5;
+	padding:5px 5px 0px 5px;
+	margin-bottom:12px;
+}
+
+.sequencing-results-css ul{
+	float:left;
+}
+.sequencing-results-css ul li{
+	margin-right:15px;
+}
+.sequencing-results-css ul li a{
+	color:#0071bf;
+	text-decoration:none;
+}
+.sequencing-results-css div{
+	float:right;
+}
+.sequencing-results-css p{
+	border-bottom:1px solid #ccc;
+	padding-bottom:5px;
+	clear:both;
+}
+
+/* 已选择条件样式 */
+#show-condition-area{
+	clear:both;
+	border-bottom:0;
+	height:35px;
+    /* border-top:1px solid #ccc;
+    	border-left:1px solid #ccc;
+    	border-right:1px solid #ccc;  */
+}
+#show-condition-area div{
+	padding: 5px 15px;
+}
+.first-div{
+	float:left;
+	margin-top:5px;
+}
+#free-condition-ul{
+	width:74%;
+	padding-bottom: 10px;
+}
+#show-condition-area ul li{
+	margin-top:6px;
+	float:left;
+	margin-right:5px;
+}
+.free-condition-css{
+	margin-right:5px;
+}
+.free-condition-css{
+	border:1px solid #0072bf;
+	padding:2px 4px;
+}
+.free-condition-css:hover{
+	cursor:pointer;
+	border:1px solid #c00;
+}
+.close-css{
+	background-color:#0071bf;
+	color:#fff;
+	padding:0px 4px;
+	margin-left:2px;
+}
+.result-numshow{
+	padding-right:0;
+	float:right;
+	display:inline-block;
+}
+
+
+/* 搜索结果 */
+.single-result-show{
+	margin-top:10px;
+	width:100%;
+	height:300px;
+	border-bottom:1px solid #ccc;
+}
+/* .result-show-top{
+	width:100%;
+	height:12px;
+	background: url(../img/contenttop.png) repeat-x;
+} */
+.person-content{
+	padding:10px;
+}
+.person-content div{
+	margin-bottom:15px;
+}
+.person-content-top div{
+	float:left;
+}
+
+.person-photo-css{
+	width:12%;
+}
+.person-photo-css a{
+	margin-left:17px;
+	color:#0071bf;
+}
+.person-photo-css a:hover{
+	color:#01406c;
+}
+.person-information-show{
+	width:88%;
+}
+.person-information-show p{
+	margin-bottom:10px;
+	height:auto;
+}
+.person-name-css{
+	font-size:16px;
+	color:#0071bf;
+}
+.person-paper-css{
+	height: auto;
+}
+
+.pagebar{
+	float:right;
+	color:#0071bf;
+}
+.pagebar a{
+	color:#0071bf;
+	text-decoration:none;
+} 
+.pagebar a:hover{
+	text-decoration:underline;
+	color:red;
+}
+.firstPage{
+	margin-left:8px;
+}
+.person-link-css{
+	height: 30px; 
+	display: inline-block; 
+	margin-top: 12px;
+	margin-left:25px; 
+	vertical-align: middle;
+}
+.person-link-css a{
+	color:#0071bf;
+	font-size:16px;
+}
+.author-details {
+	height: 210px;
+	padding:25px;
+	background:url(../img/authorbg.png) no-repeat;
+	margin-top:10px;
+}
+.author-img{
+	width:115px;
+	height:125px;
+	overflow:hidden;
+	/* border:2px #0071bf solid; */
+}
+.author-details-left {
+	width: 15%;
+	float: left;
+}
+
+.author-details-right {
+	width: 85%;
+	float: left;
+}
+
+.author-details-right-vertical div{
+	line-height:26px;
+} 
+.author-name{
+	padding-left:20px;
+}
+.author-name a{
+	font-size: 18px;
+	color:#0071bf;
+	text-decoration:none;
+}
+.conmmon-css{
+	border-left:3px #0071bf solid;
+	padding-right:10px;
+}
+.conmmon-css span{
+	padding-left:5px;
+	color:#0071bf;
+}
+.author-year{
+	margin-left:10px;
+}
+
+.author-coAuthor a{
+	margin:0 10px;
+	color:#0071bf;
+}
+.author-tags a{
+	display:inline;
+	background-color:#cde1ed;
+	border-radius:5px;
+	text-decoration:none;
+	padding:1px 3px 3px 6px;
+	color:#0071bf;
+	margin-right:2px;
+}
+.footer {
+	margin-top: 20px;
+	vertical-align: middle;
+	height: 30px;
+	margin-bottom: 100px;
+}
+
+.table-conf {
+	width: 40%;
+}
+
+/* 小图标定位 */
+[class$="-icon"]{
+	vertical-align:middle;
+}
+.unit-icon{
+	height:16px;
+	width:16px;
+	margin-right:1px;
+	display:inline-block;
+	background:url(../img/bgimgs.png) -4px -9px no-repeat;
+}
+.reprent-work-icon{
+	height:16px;
+	width:16px;
+	margin-right:5px;
+	display:inline-block;
+	background:url(../img/bgimgs.png) -4px -33px no-repeat;
+}
+.work-num-icon{
+	height:16px;
+	width:16px;
+	margin-right:5px;
+	display:inline-block;
+	background:url(../img/bgimgs.png) -4px -56px no-repeat;
+}
+.interest-tag-icon{
+	height:16px;
+	width:16px;
+	margin-right:1px;
+	display:inline-block;
+	background:url(../img/bgimgs.png) -4px -79px no-repeat;
+} 
+.con-user-icon{
+	height:16px;
+	width:16px;
+	margin-right:5px;
+	display:inline-block;
+	background:url(../img/bgimgs.png) -4px -103px no-repeat;
+}
