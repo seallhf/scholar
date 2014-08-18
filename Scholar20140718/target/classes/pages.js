@@ -6,7 +6,7 @@ $(document).ready(function() {
 });
 
 function addAuthorPaper() {
-	$(".author_paper")
+	$(".author-paper")
 			.each(
 					function() {
 						var aid = $(this).attr("id"); // 这里的value就是每一个input的value值~
@@ -25,23 +25,32 @@ function addAuthorPaper() {
 											alert("服务器没有返回数据，可能服务器忙，请重试");
 										},
 										success : function(json) {
-											html = "<br/><table class=\"table_conf\" ><tr class=\"conf\">";
-											var conf = "<td width=15%>会议：</td>	<td width=20%>A - "
-													+ json["aconf"]
-													+ "</td><td width=20%>B - "
-													+ json["bconf"]
-													+ "</td><td width=20%>C - "
-													+ json["cconf"] + "</td>";
-											html = html + conf;
-											html += "</tr><tr class=\"jounal\">";
-											var jounal = "<td width=15%>期刊：</td>	<td width=20%>A - "
-													+ json["ajounal"]
-													+ "</td><td width=20%>B - "
-													+ json["bjounal"]
-													+ "</td><td width=20%>C - "
-													+ json["cjounal"] + "</td>";
-											html = html + jounal;
-											html = html + "</tr></table>";
+											html = "<span class=\"work-num-icon\"></span>"
+											      + "<span class=\"mr5\">论文数量:</span>"
+											      + "["
+											      + "<label><span>会议:</span>"
+											      + "<span class=\"ml8\">A级-<span class=\"lighting-color\">"
+											      + json["aconf"]
+											      + "</span></span>"
+											      + "<span class=\"ml8\">B级-<span class=\"lighting-color\">"
+											      + json["bconf"]
+											      + "</span></span>"
+											      + "<span class=\"ml8\">C级-<span class=\"lighting-color\">"
+											      + json["cconf"]
+											      + "</span></span>"
+											      + "</label>"
+											      + "<label class=\"ml8\"><span class=\"ml8\">期刊:</span>"
+											      + "<span class=\"ml8\">A级-<span class=\"lighting-color\">"
+											      + json["ajounal"]
+											      + "</span></span>"
+											      + "<span class=\"ml8\">B级-<span class=\"lighting-color\">"
+											      + json["bjounal"]
+											      + "</span></span>"
+											      + "<span class=\"ml8\">C级-<span class=\"lighting-color\">"
+											      + json["cjounal"]
+											      + "</span></span>"
+											      + "</label>"
+											      +"]"
 										}
 									});
 							$(this).html(html);
@@ -50,7 +59,7 @@ function addAuthorPaper() {
 }
 
 function addCoAuthorDetails() {
-	$(".author_coAuthor")
+	$(".author-coAuthor")
 			.each(
 					function() {
 						var aid = $(this).attr("id"); // 这里的value就是每一个input的value值~
@@ -69,14 +78,15 @@ function addCoAuthorDetails() {
 											alert("服务器没有返回数据，可能服务器忙，请重试");
 										},
 										success : function(json) {
-											html = "&nbsp;&nbsp;<i class=\"icon-user\"></i>&nbsp;&nbsp;"
-													+ "合作者<a href = \"http://scholar.google.com.cn/citations?hl=zh-CN&user="
+											html = "<span class=\"con-user-icon\"></span>"
+													+ "<span>高级合作者:</span><a href = \"http://scholar.google.com.cn/citations?hl=zh-CN&user="
 													+ json["aid"]
-													+ "&view_op=list_works&pagesize=100\">"
+													+ "&view-op=list-works&pagesize=100\">"
 													+ json["name"]
-													+ "</a>&nbsp;(<strong>"
+													+ "</a>"
+													+ '[论文引用总数:&nbsp;&nbsp;<span class="lighting-color">'
 													+ json["citeindex"]
-													+ "</strong>)";
+													+ "</span>]";
 										}
 									});
 							$(this).html(html);
@@ -87,7 +97,7 @@ function addCoAuthorDetails() {
 }
 
 function addFarmousPaperDetails() {
-	$(".author_farmousPaper")
+	$(".author-farmousPaper")
 			.each(
 					function() {
 						var pid = $(this).attr("id"); // 这里的value就是每一个input的value值~
@@ -106,15 +116,17 @@ function addFarmousPaperDetails() {
 											alert("服务器没有返回数据，可能服务器忙，请重试");
 										},
 										success : function(json) {
-											html = "<i style=\"float:left;margin-left: 10px\" class=\"icon-star\" /><ui style=\"float:left;margin-left: 10px;width:90%\"><li>"
-													+ "代表文章&nbsp;\""
-													+ json["title"]
-													+ "\"&nbsp;(<strong>"
-													+ json["citeIndex"]
-													+ "</strong>)</li>"
-													+ "<li style=\"font-size:12px;color:#9D9D9D\">"
-													+ json["jounalName"]
-													+ "</li></ui>";
+											var titlevalue = json["title"];
+											html = "<div class=\"inline-block-css\"><span class=\"reprent-work-icon\"></span>"
+											       + "<span>代表文章:</span>"
+											       + "<span class=\"ml5\">[引用次数:<span class=\"lighting-color ml5\">"
+											       + json["citeIndex"]
+											       + "</span>] </span>"
+											       + '<a class="title-link-css" title="'+ titlevalue +'">' + titlevalue + "</a>"
+											       + "</div>"
+											       + "<div class=\"ml77\"><span>发表期刊:</span>"
+											       + "<span class=\"ml5\">" + json["jounalName"] + "</span>"
+											       + "</div>"
 										}
 									});
 							$(this).html(html);
@@ -132,105 +144,220 @@ function contains(list,element) {
 		}
 	}
 	return false;
-};
+}
 
+
+// 2014/8/12 edited by dym
 function addAttributeHeader() {
 	var query = $("#searchQuery").val();
 	var terms = $("#searchTerms").val().split(';');
 	var checked = new Array();
 	for (var i = 0; i < terms.length; i++) {
 		var term = terms[i];
-		if (term != null)
+		if (term != null){
+
 			checked.push(term.split(',')[1]);
-	}
-	//alert(checked);
-	var html = "";
-	{
-		$
-				.ajax({
-					url : "searchClassification.action", // 后台处理程序
-					data : {
-						query : query
-					},
-					type : "post", // 数据发送方式
-					async : false,
-					dataType : "json", // 接受数据格式
-					error : function() {
-						alert("服务器没有返回数据，可能服务器忙，请重试");
-					},
-					success : function(json) {
-						html = "&nbsp;&nbsp;";
-						var a = json["company"];
-						for ( var term in a) {
-							if (contains(checked,term))
-								html = html
-										+ "<div style =\"width:17%;float:left;text-align: left;\"><input type=\"checkbox\" onchange=\"changefunction()\" checked=\"checked\" name=\"company\" id = \"company\" value=\""
-										+ term + "\" />" + term + "(" + a[term]
-										+ ")&nbsp;&nbsp;</div>";
-							else
-								html = html
-										+ "<div style =\"width:17%;float:left;text-align: left;\"><input type=\"checkbox\" onchange=\"changefunction()\" name=\"company\" id = \"company\" value=\""
-										+ term + "\" />" + term + "(" + a[term]
-										+ ")&nbsp;&nbsp;</div>";
-						}
-						$(".checkbox_company").html(html);
-						html = "&nbsp;&nbsp;";
-						var a = json["position"];
-						for ( var term in a) {
-							if (contains(checked,term))
-								html = html
-										+ "<div style =\"width:17%;float:left;text-align: left;\"><input style =\"width:10%\" type=\"checkbox\" checked=\"checked\" onchange=\"changefunction()\" name=\"position\" id = \"position\" value=\""
-										+ term + "\" />" + term + "(" + a[term]
-										+ ")&nbsp;&nbsp;</div>";
-							else
-								html = html
-										+ "<div style =\"width:17%;float:left;text-align: left;\"><input style =\"width:10%\" type=\"checkbox\" onchange=\"changefunction()\" name=\"position\" id = \"position\" value=\""
-										+ term + "\" />" + term + "(" + a[term]
-										+ ")&nbsp;&nbsp;</div>";
-						}
-						$(".checkbox_position").html(html);
-						html = "&nbsp;&nbsp;";
-						var a = json["system"];
-						for ( var term in a) {
-							if (contains(checked, term))
-								html = html
-										+ "<div style =\"width:17%;float:left;text-align: left;\"><input style =\"width:10%\" type=\"checkbox\" checked=\"checked\" onchange=\"changefunction()\" name=\"system\" id = \"system\" value=\""
-										+ term + "\" />" + term + "(" + a[term]
-										+ ")&nbsp;&nbsp;</div>";
-							else
-								html = html
-										+ "<div style =\"width:17%;float:left;text-align: left;\"><input style =\"width:10%\" type=\"checkbox\" onchange=\"changefunction()\" name=\"system\" id = \"system\" value=\""
-										+ term + "\" />" + term + "(" + a[term]
-										+ ")&nbsp;&nbsp;</div>";
-						}
-						
-						$(".checkbox_system").html(html);
-					}
-				});
+		}
 	}
 
+	$.ajax({
+		url : "searchClassification.action", // 后台处理程序
+		data : {
+			query : query
+		},
+		type : "post", // 数据发送方式
+		async : false,
+		dataType : "json", // 接受数据格式
+		error : function() {
+			alert("服务器没有返回数据，可能服务器忙，请重试");
+		},
+		success : function(json) {
+			var comarray = json["company"];
+			var posarray = json["position"];
+			var sysarray = json["system"];
+			var showUl = $('#free-condition-ul');
+
+			$('#flagCompany').empty();
+			$('#flagPosition').empty();
+			$('#flagSystem').empty();
+			showUl.empty();
+
+			for ( var term in comarray) {
+				if (contains(checked,term)){
+					showUl.append(
+						'<li name="'+ term +'" class="free-condition-css" onclick="removecondition(1, this);">' +
+							'<a>' +
+								'<span>公司:</span>' +
+								'<span class="lighting-color ml2">'+ term +'</span>' +
+								'<span class="close-css">x</span>' +
+							'</a>' +
+						'</li>'
+					);
+					$('#flagCompany').append(
+						'<li name="'+ term +'" class="hideblock" onclick="addcondition(1,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ comarray[term] +')</span>'+
+						'</li>'
+						);
+				
+				}else{
+
+					$('#flagCompany').append(
+						'<li name="'+ term +'" onclick="addcondition(1,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ comarray[term] +')</span>'+
+						'</li>'
+						);
+				
+				}
+			}
+			
+			for ( var term in posarray) {
+				if (contains(checked,term)){
+					showUl.append(
+						'<li name="'+ term +'" class="free-condition-css" onclick="removecondition(2, this);">' +
+							'<a>' +
+								'<span>职位:</span>' +
+								'<span class="lighting-color ml2">'+ term +'</span>' +
+								'<span class="close-css">x</span>' +
+							'</a>' +
+						'</li>'
+					);
+					$('#flagPosition').append(
+						'<li name="'+ term +'" class="hideblock" onclick="addcondition(2,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>(' + posarray[term] +')</span>'+
+						'</li>'
+						);
+					
+				}else{
+
+					$('#flagPosition').append(
+						'<li name="'+ term +'" onclick="addcondition(2,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>(' + posarray[term] +')</span>'+
+						'</li>'
+						);
+				}
+			}
+			
+			for ( var term in sysarray) {
+				if (contains(checked,term)){
+					showUl.append(
+						'<li name="'+ term +'" class="free-condition-css" onclick="removecondition(3, this);">' +
+							'<a>' +
+								'<span>领域:</span>' +
+								'<span class="lighting-color ml2">'+ term +'</span>' +
+								'<span class="close-css">x</span>' +
+							'</a>' +
+						'</li>'
+					);
+
+					$('#flagSystem').append(
+						'<li name="'+ term +'" class="hideblock" onclick="addcondition(3,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>(' + sysarray[term] +')</span>'+
+						'</li>'
+						);
+					
+				}else{
+
+					$('#flagSystem').append(
+						'<li name="'+ term +'" onclick="addcondition(3,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>(' + sysarray[term] +')</span>'+
+						'</li>'
+						);
+				}
+				
+			}
+		}
+	});
 }
 
-function changefunction() {
+
+// 2014/8/12 written by dym
+
+function addcondition(flag, _this) {  //选择条件
+	var elemvalue = $(_this).attr('name');
 	var terms = [];
-	var company = document.getElementsByName("company");
-	for (var i = 0; i < company.length; i++) {
-		if (company[i].checked) {
-			terms += ("location," + company[i].value + ";");
-		}
+	$(_this).addClass('hideblock');
+
+	if(flag == "1"){
+
+		$('#free-condition-ul').append(
+			'<li name="'+ elemvalue +'" class="free-condition-css" onclick="removecondition(1, this);">' +
+				'<a>' +
+					'<span>公司:</span>' +
+					'<span class="lighting-color ml2">'+ elemvalue +'</span>' +
+					'<span class="close-css">x</span>' +
+				'</a>' +
+			'</li>'
+		);
+
+	}else if(flag == "2"){
+
+		$('#free-condition-ul').append(
+			'<li name="'+ elemvalue +'" class="free-condition-css" onclick="removecondition(2, this);">' +
+				'<a>' +
+					'<span>职位:</span>' +
+					'<span class="lighting-color ml2">'+ elemvalue +'</span>' +
+					'<span class="close-css">x</span>' +
+				'</a>' +
+			'</li>'
+		);
+
+	}else if(flag == "3"){
+
+		$('#free-condition-ul').append(
+			'<li name="'+ elemvalue +'" class="free-condition-css" onclick="removecondition(3, this);">' +
+				'<a>' +
+					'<span>领域:</span>' +
+					'<span class="lighting-color ml2">'+ elemvalue +'</span>' +
+					'<span class="close-css">x</span>' +
+				'</a>' +
+			'</li>'
+		);
 	}
-	var position = document.getElementsByName("position");
-	for (var i = 0; i < position.length; i++) {
-		if (position[i].checked) {
-			terms += ("location," + position[i].value + ";");
-		}
+
+	var selectedelem = $('#free-condition-ul').find('span.lighting-color');
+	for(var i=0; i<selectedelem.length; i++){
+        var value = $(selectedelem[i]).text();
+		terms += ("location," + value + ";");
 	}
-	var system = document.getElementsByName("system");
-	for (var i = 0; i < system.length; i++) {
-		if (system[i].checked) {
-			terms += ("location," + system[i].value + ";");
-		}
+
+	$('#searchTerms').attr('value',terms);
+	$('#searchbutton').click();
+}
+
+function removecondition(flag2, _this){  // 清除条件
+	var removevalue = $(_this).attr('name');
+	var terms = [];
+	$(_this).remove();
+
+	if(flag2 == '1'){
+		$('#flagCompany').find('li:contains(' + removevalue +')').removeClass('hideblock');
+	}else if(flag2 == '2'){
+		$('#flagPosition').find('li:contains('+removevalue +')').removeClass('hideblock');
+	}else if(flag2 == '3'){
+		$('#flagSystem').find('li:contains('+ removevalue +')').removeClass('hideblock');
 	}
-	document.getElementById('searchTerms').value = terms;
-	//alert($("#searchTerms").val());
-};
+
+	var selectedelem = $('#free-condition-ul').find('span.lighting-color');
+	for(var i=0; i<selectedelem.length; i++){
+        var value = $(selectedelem[i]).text();
+		terms += ("location," + value + ";");
+	}
+
+	$('#searchTerms').attr('value',terms);
+	$('#searchbutton').click();
+}
+
+//点击“更多”
+function showmorecondition(){
+	
+}
+
+
+
+
