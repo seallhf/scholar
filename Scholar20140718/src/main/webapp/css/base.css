@@ -1,0 +1,59 @@
+/* written by dym 2014/8/5 */
+
+*{
+	margin:0;
+	padding:0;
+}
+
+body{
+	font-family:"Microsoft Yahei", Tahoma, Helvetica, Arial, Verdana, "宋体",sans-serif;
+	font-size:12px;
+	background-color:#f5f4f3;
+}
+
+ul li{
+	list-style-type:none;
+	display:inline-block;
+}
+img{
+	border:0;
+}
+.left{
+	float:left;
+}
+.right{
+	float:right;
+}
+.bold-word{
+	font-weight:bold;
+}
+.lighting-color{
+	color:#0071bf;
+}
+.warning-color{
+	color:#c00;
+}
+.hideblock{
+	display:none;
+}
+.ml2{
+	margin-left:2px;
+}
+.pl5{
+	padding-left:5px;
+}
+.ml8{
+	margin-left:8px;
+}
+.ml3{
+	margin-left:3px;
+}
+.ml4{
+	margin-left:4px;
+}
+.ml5{
+	margin-left:5px;
+}
+.mr5{
+	margin-right:5px;
+}
