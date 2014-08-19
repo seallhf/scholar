@@ -26,6 +26,7 @@
 .inline-block-css{width:810px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .title-link-css:hover{cursor:pointer;}
 .otherdisplay{display:none;}
+.sortby-icon-css{}
 </style>
 <script src="<%=basePath%>js/jquery-1.11.1.js" type="text/javascript"></script>
 <script src="<%=basePath%>js/pages.js" type="text/javascript"></script>
@@ -98,8 +99,8 @@
 			    <c:choose>
 					<c:when test="${sortby == ''}">
 						<li>
-							<a style="color: red">默认排序</a>
-							<i class="icon-arrow-down"></i>
+							<a class="remind-color">默认排序</a>
+							<span class="sortby-icon-css">!</span>
 						</li>
 					</c:when>
 					<c:otherwise>
