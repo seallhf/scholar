@@ -46,7 +46,7 @@ public class ScholarSpider {
 
 	private Map<String, String> header = new HashMap<String, String>();
 
-	private final long sleeptime = 3000;
+	private final long sleeptime = 1000;
 	
 	/**
 	 * HttpRequest header 拼接HTTP头参数
@@ -56,7 +56,7 @@ public class ScholarSpider {
 				"CP21yQEIkbbJAQiktskBCKm2yQEIwbbJAQiehsoBCLiIygE=");
 		header.put(
 				"cookie",
-				"GSP=ID=7a0b905d571ed94f:LM=1406876542:S=o7KPkQyC2qGQHYdc; PREF=ID=7a0b905d571ed94f:TM=1406876542:LM=1406876542:S=7Th_6FkodKAXj41r; GOOGLE_ABUSE_EXEMPTION=ID=1a29c8a569c4e77a:TM=1407133190:C=c:IP=116.251.217.178-:S=APGng0uW4QD0totJ3QQtFJO-OMXJ1II-dA");
+				"PREF=ID=7a4885fa2516ec22:NW=1:TM=1404377596:LM=1404377596:S=5FiX8nNjLa1Y-i_v");
 		header.put("Host", "scholar.google.com.cn");
 		header.put("Connection", "keep-alive");
 		header.put("Accept-Encoding", "gzip,deflate,sdch");
@@ -433,6 +433,7 @@ public class ScholarSpider {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	public Paper getPaperDetail(Element table, String authorId, String urlId) {
 		Paper paper = new Paper();
 		Element e = table.getElementById("col-title");

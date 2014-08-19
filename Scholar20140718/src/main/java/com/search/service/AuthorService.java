@@ -46,7 +46,7 @@ public class AuthorService {
 	 * @return
 	 */
 	public AuthorPaper createAuthorPaper(Author author, List<Paper> papers) {
-		long start=System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 		AuthorPaper authorPaper = (AuthorPaper) SpringBeanFactory
 				.getBean("authorPaper");
 		int aconf = 0, bconf = 0, cconf = 0;
@@ -103,7 +103,8 @@ public class AuthorService {
 		authorPaper.setCconf(cconf);
 		authorPaper.setCjounal(cjounal);
 		authorPaper.setAid(author.getAid());
-		System.out.println("create authorPaper cost "+(System.currentTimeMillis() - start)+" ms");
+		System.out.println("create authorPaper cost "
+				+ (System.currentTimeMillis() - start) + " ms");
 		return authorPaper;
 	}
 
@@ -141,7 +142,8 @@ public class AuthorService {
 		authorPage.setName(a.getName());
 		authorPage.setTags(a.getTags());
 		authorPage.setYear(caculateFirstYear(papers));
-		System.out.println("create authorPage cost "+(System.currentTimeMillis() - start)+" ms");
+		System.out.println("create authorPage cost "
+				+ (System.currentTimeMillis() - start) + " ms");
 		return authorPage;
 	}
 
@@ -190,7 +192,8 @@ public class AuthorService {
 		authorRank.setAid(author.getAid());
 		authorRank.setTags(author.getTags());
 		authorRank.setLocation(author.getCollege());
-		System.out.println("create authorRank cost "+(System.currentTimeMillis() - start)+" ms");
+		System.out.println("create authorRank cost "
+				+ (System.currentTimeMillis() - start) + " ms");
 		return authorRank;
 	}
 
@@ -203,9 +206,10 @@ public class AuthorService {
 						&& !paper.getDate().equals("")) {
 					String years = paper.getDate();
 					if (years.length() > 4)
-						list.add(Integer.parseInt(years.substring(0, 4)));
-					else
-						list.add(Integer.parseInt(years));
+						if (Integer.parseInt(years.substring(0, 4)) > 1900)
+							list.add(Integer.parseInt(years.substring(0, 4)));
+						else if (Integer.parseInt(years) > 1900)
+							list.add(Integer.parseInt(years));
 				}
 			}
 			Collections.sort(list, new Comparator() {

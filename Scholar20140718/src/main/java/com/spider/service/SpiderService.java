@@ -56,7 +56,7 @@ public class SpiderService {
 				System.out.println("author :" + aid + "---->inserted!");
 			}
 		} else if (a.getPapers() == null) {
-			a = spider.getAuthorDetail(aid);
+			// a = spider.getAuthorDetail(aid);
 			if (a != null) {
 				mongo.updateAuthorData(aid, "papers", a);
 				System.out.println("author :" + aid + "---->updated!");
@@ -64,8 +64,9 @@ public class SpiderService {
 		}
 
 		// 合理化authorPage的数据交互
-		else if (aPage.getYear().equals("1900")) {
-			//a = spider.getAuthorDetail(aid);
+		else if (aPage.getYear().equals("1900")
+				|| (!aPage.getYear().equals("未知"))
+				&& (Integer.parseInt(aPage.getYear()) < 1900)) {
 			long start = System.currentTimeMillis();
 			List<Paper> lists = new ArrayList<Paper>();
 			for (String pid : a.getPapers().keySet()) {
@@ -78,11 +79,13 @@ public class SpiderService {
 						authorService.createAuthorPage(a, lists));
 				System.out.println("authorPage :" + aid + "---->updated!");
 			}
-			System.out.println("get Papaers cost "+(System.currentTimeMillis() - start)+" ms");
+			System.out.println("get Papaers cost "
+					+ (System.currentTimeMillis() - start) + " ms");
 		}
 		return a;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void getNewAuthors() throws IOException {
 		Map<String, DBObject> authors = mongo.getAllAuthorOld();
 		// Map<String, String> authors = IOUtil.read2Map("d:/data.txt");
@@ -107,7 +110,8 @@ public class SpiderService {
 			System.out.println((i++) + ":" + id);
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public void getAuthorsUpdates() throws IOException {
 		Map<String, DBObject> authors = mongo.getAllAuthorOld();
 		// Map<String, String> authors = IOUtil.read2Map("d:/data.txt");
@@ -136,11 +140,7 @@ public class SpiderService {
 	public void getNewAuthor(String id) {
 		if (id != null) {
 			if (mongo.findAuthor(id) == null) {
-				// 向数据库添加抓取的用户和文章数据,
-				// 并添加索引,写在spider中
-				Author a = spideAuthor(id);
-				// 向索引数据库添加缩影数据
-				// index.updateIndex(a);
+				spideAuthor(id);
 			} else {
 				// 爬虫数据库中已经存在的数据，对其进行索引的添加
 				Author a = mongo.findAuthor(id);
@@ -151,12 +151,7 @@ public class SpiderService {
 
 	public void getNewAuthorTest(String id) {
 		if (id != null) {
-			// if (mongo.findAuthor(id) == null) {
-			// 向数据库添加抓取的用户和文章数据,
-			// 并添加索引,写在spider中
-			Author a = spideAuthor(id);
-			// 向索引数据库添加缩影数据
-			// index.updateIndex(a);
+			spideAuthor(id);
 		}
 		// else
 		// {
@@ -170,7 +165,9 @@ public class SpiderService {
 	public static void main(String[] args) throws IOException {
 		SpiderService service = (SpiderService) SpringBeanFactory
 				.getBean("spiderService");
-		//service.getNewAuthorTest("Iss3wgUAAAAJ");
+		ScholarSpider spider = (ScholarSpider) SpringBeanFactory
+				.getBean("scholarSpider");
+		//spider.getAuthorDetail("S9qDVXoAAAAJ");
 		service.getAuthorsUpdates();
 	}
 }

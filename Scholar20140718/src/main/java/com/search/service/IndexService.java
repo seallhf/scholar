@@ -15,7 +15,6 @@ import com.search.pojo.AuthorRank;
 import com.spider.pojo.Author;
 import com.spider.pojo.Paper;
 import com.spider.service.MongoService;
-import com.utils.spring.SpringBeanFactory;
 
 @Service
 public class IndexService {
@@ -111,11 +110,7 @@ public class IndexService {
 	}
 
 	public static void main(String[] args) {
-		AuthorService authorService = (AuthorService) SpringBeanFactory
-				.getBean("authorService");
-		AuthorPage rank = authorService.createAuthorPage("Iss3wgUAAAAJ",null);
-		System.out.println("");
-		// index.updateAuthorPaper("pGsO6EkAAAAJ");
+	
 	}
 
 }

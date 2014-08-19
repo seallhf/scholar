@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.search.service.SearchService;
 import com.utils.TypeCastUtil;
 import com.web.pojo.Page;

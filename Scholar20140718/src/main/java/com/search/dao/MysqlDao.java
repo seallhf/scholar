@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import com.search.pojo.AuthorPage;
 import com.search.pojo.AuthorPaper;
-import com.utils.spring.SpringBeanFactory;
 
 @Repository
 public class MysqlDao {
@@ -123,7 +122,7 @@ public class MysqlDao {
 	}
 
 	public static void main(String[] args) {
-		MysqlDao dao = (MysqlDao) SpringBeanFactory.getBean("mysqlDao");
+		//MysqlDao dao = (MysqlDao) SpringBeanFactory.getBean("mysqlDao");
 		// System.out.println(dao.pageJdbcTemplate);
 	}
 }

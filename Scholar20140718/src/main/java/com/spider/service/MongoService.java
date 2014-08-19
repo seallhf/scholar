@@ -14,12 +14,10 @@ import com.mongodb.DBObject;
 import com.search.pojo.AuthorPage;
 import com.search.pojo.AuthorPaper;
 import com.search.pojo.AuthorRank;
-import com.search.service.AuthorService;
 import com.spider.dao.MongoDao;
 import com.spider.pojo.Author;
 import com.spider.pojo.Authors;
 import com.spider.pojo.Paper;
-import com.utils.spring.SpringBeanFactory;
 
 @Service
 public class MongoService {

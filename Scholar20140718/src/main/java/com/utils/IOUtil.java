@@ -87,7 +87,6 @@ public class IOUtil {
 	}
 
 	public static Map<String, String> read2Map(String path) {
-		@SuppressWarnings("unchecked")
 		Map<String, String> list = new HashMap<String, String>();
 		try {
 			@SuppressWarnings("resource")
