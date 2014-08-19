@@ -53,20 +53,20 @@
 }
 .single-condition-css{
 	border-bottom:1px solid #ccc;
-	height:35px;
+	min-height:35px;
 }
 .single-condition-css div{
-	/* margin-right:20px; */
 	display:inline-block;
 	line-height:25px;
-	padding:5px 15px;
+	padding:6px 15px;
 }
 .single-condition-css ul{
 	display:inline-block;
 }
 .single-condition-css ul li{
-	margin-right:15px;
-	width:140px;
+	margin-right:10px;
+	width:125px;
+	margin-bottom:10px;
 }
 .single-condition-css ul li a{ /*多余内容隐藏并以省略号代替*/
 	max-width:80px;
@@ -81,28 +81,29 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-.conditions-search-css div ul li:hover{
+.selected-hover-css:hover{
 	background-color:#0071bf;
 	color:#fff;
 	cursor:pointer;
 }
-.more-show-css{
+.packup-show-css, .more-show-css{
 	cursor:pointer;
 	float:right;
 }
-.more-show-css:hover{
+.packup-show-css:hover, .more-show-css:hover{
 	color:#0071bf;
 }
 .selected-li{
 	width: 83%;
-	padding: 10px;
+	padding: 10px 10px 5px 10px;
 }
 .inite-ul-css{
 	max-height:16px;
 	overflow:hidden;
 }
 .more-ul-css{
-	max-height:48px;
+	min-height:16px;
+	max-height:140px;
 	overflow-y: auto;
 }
 
@@ -137,9 +138,6 @@
 	clear:both;
 	border-bottom:0;
 	height:35px;
-    /* border-top:1px solid #ccc;
-    	border-left:1px solid #ccc;
-    	border-right:1px solid #ccc;  */
 }
 #show-condition-area div{
 	padding: 5px 15px;
@@ -159,8 +157,6 @@
 }
 .free-condition-css{
 	margin-right:5px;
-}
-.free-condition-css{
 	border:1px solid #0072bf;
 	padding:2px 4px;
 }

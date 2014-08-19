@@ -3,6 +3,7 @@ $(document).ready(function() {
 	addCoAuthorDetails();
 	addFarmousPaperDetails();
 	addAttributeHeader();
+	showmorecondition();
 });
 
 function addAuthorPaper() {
@@ -147,7 +148,7 @@ function contains(list,element) {
 }
 
 
-// 2014/8/12 edited by dym
+// 2014/8/19 edited by dym
 function addAttributeHeader() {
 	var query = $("#searchQuery").val();
 	var terms = $("#searchTerms").val().split(';');
@@ -176,13 +177,16 @@ function addAttributeHeader() {
 			var posarray = json["position"];
 			var sysarray = json["system"];
 			var showUl = $('#free-condition-ul');
-
+			var comcounter = 0;
+			var poscounter = 0;
+			var syscounter = 0;
 			$('#flagCompany').empty();
 			$('#flagPosition').empty();
 			$('#flagSystem').empty();
 			showUl.empty();
 
 			for ( var term in comarray) {
+				comcounter++;
 				if (contains(checked,term)){
 					showUl.append(
 						'<li name="'+ term +'" class="free-condition-css" onclick="removecondition(1, this);">' +
@@ -193,26 +197,45 @@ function addAttributeHeader() {
 							'</a>' +
 						'</li>'
 					);
-					$('#flagCompany').append(
-						'<li name="'+ term +'" class="hideblock" onclick="addcondition(1,this);">'+ 
+					if(comcounter <= 6){
+						$('#flagCompany').append(
+						'<li name="'+ term +'" class="disabed-css">'+ 
 							'<a title="'+ term +'">'+ term +'</a>'+
 							'<span>('+ comarray[term] +')</span>'+
 						'</li>'
 						);
-				
+					}else{
+						$('#flagCompany').append(
+						'<li name="'+ term +'" class="disabed-css otherdisplay">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ comarray[term] +')</span>'+
+						'</li>'
+						);
+					}
+					
 				}else{
 
-					$('#flagCompany').append(
-						'<li name="'+ term +'" onclick="addcondition(1,this);">'+ 
+					if(comcounter <= 6){
+						$('#flagCompany').append(
+						'<li name="'+ term +'" class="selected-hover-css" onclick="addcondition(1,this);">'+ 
 							'<a title="'+ term +'">'+ term +'</a>'+
 							'<span>('+ comarray[term] +')</span>'+
 						'</li>'
 						);
-				
+					}else{
+						$('#flagCompany').append(
+						'<li name="'+ term +'" class="otherdisplay selected-hover-css" onclick="addcondition(1,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ comarray[term] +')</span>'+
+						'</li>'
+						);
+					}
+
 				}
 			}
 			
 			for ( var term in posarray) {
+				poscounter++;
 				if (contains(checked,term)){
 					showUl.append(
 						'<li name="'+ term +'" class="free-condition-css" onclick="removecondition(2, this);">' +
@@ -223,53 +246,97 @@ function addAttributeHeader() {
 							'</a>' +
 						'</li>'
 					);
-					$('#flagPosition').append(
-						'<li name="'+ term +'" class="hideblock" onclick="addcondition(2,this);">'+ 
+					if(poscounter <= 6){
+						$('#flagPosition').append(
+						'<li name="'+ term +'" class="disabed-css">'+ 
 							'<a title="'+ term +'">'+ term +'</a>'+
-							'<span>(' + posarray[term] +')</span>'+
+							'<span>('+ posarray[term] +')</span>'+
 						'</li>'
 						);
+					}else{
+						$('#flagPosition').append(
+						'<li name="'+ term +'" class="disabed-css otherdisplay">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ posarray[term] +')</span>'+
+						'</li>'
+						);
+					}
 					
 				}else{
-
-					$('#flagPosition').append(
-						'<li name="'+ term +'" onclick="addcondition(2,this);">'+ 
+					if(poscounter <= 6){
+						$('#flagPosition').append(
+						'<li name="'+ term +'" class="selected-hover-css" onclick="addcondition(2,this);">'+ 
 							'<a title="'+ term +'">'+ term +'</a>'+
-							'<span>(' + posarray[term] +')</span>'+
+							'<span>('+ posarray[term] +')</span>'+
 						'</li>'
 						);
+					}else{
+						$('#flagPosition').append(
+						'<li name="'+ term +'" class="otherdisplay selected-hover-css" onclick="addcondition(2,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ posarray[term] +')</span>'+
+						'</li>'
+						);
+					}
 				}
 			}
 			
 			for ( var term in sysarray) {
+				syscounter++;
 				if (contains(checked,term)){
+
 					showUl.append(
-						'<li name="'+ term +'" class="free-condition-css" onclick="removecondition(3, this);">' +
-							'<a>' +
-								'<span>领域:</span>' +
-								'<span class="lighting-color ml2">'+ term +'</span>' +
-								'<span class="close-css">x</span>' +
-							'</a>' +
-						'</li>'
+					'<li name="'+ term +'" class="free-condition-css" onclick="removecondition(3, this);">' +
+						'<a>' +
+							'<span>领域:</span>' +
+							'<span class="lighting-color ml2">'+ term +'</span>' +
+							'<span class="close-css">x</span>' +
+						'</a>' +
+					'</li>'
 					);
-
-					$('#flagSystem').append(
-						'<li name="'+ term +'" class="hideblock" onclick="addcondition(3,this);">'+ 
+					if(syscounter <= 6){
+						$('#flagSystem').append(
+						'<li name="'+ term +'" class="disabed-css">'+ 
 							'<a title="'+ term +'">'+ term +'</a>'+
-							'<span>(' + sysarray[term] +')</span>'+
+							'<span>('+ sysarray[term] +')</span>'+
 						'</li>'
 						);
-					
+					}else{
+						$('#flagSystem').append(
+						'<li name="'+ term +'" class="disabed-css otherdisplay">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ sysarray[term] +')</span>'+
+						'</li>'
+						);
+					}
+
 				}else{
-
-					$('#flagSystem').append(
-						'<li name="'+ term +'" onclick="addcondition(3,this);">'+ 
+					if(syscounter <= 6){
+						$('#flagSystem').append(
+						'<li name="'+ term +'" class="selected-hover-css" onclick="addcondition(3,this);">'+ 
 							'<a title="'+ term +'">'+ term +'</a>'+
-							'<span>(' + sysarray[term] +')</span>'+
+							'<span>('+ sysarray[term] +')</span>'+
 						'</li>'
 						);
+					}else{
+						$('#flagSystem').append(
+						'<li name="'+ term +'" class="otherdisplay selected-hover-css" onclick="addcondition(3,this);">'+ 
+							'<a title="'+ term +'">'+ term +'</a>'+
+							'<span>('+ sysarray[term] +')</span>'+
+						'</li>'
+						);
+					}
 				}
 				
+			}
+			if(comcounter > 6){
+				$('#flagCompany').next().text('更多');
+			}
+			if(poscounter > 6){
+				$('#flagPosition').next().text('更多');
+			}
+			if(syscounter > 6){
+				$('#flagSystem').next().text('更多');
 			}
 		}
 	});
@@ -281,12 +348,11 @@ function addAttributeHeader() {
 function addcondition(flag, _this) {  //选择条件
 	var elemvalue = $(_this).attr('name');
 	var terms = [];
-	$(_this).addClass('hideblock');
-
+	
 	if(flag == "1"){
 
 		$('#free-condition-ul').append(
-			'<li name="'+ elemvalue +'" class="free-condition-css" onclick="removecondition(1, this);">' +
+			'<li name="'+ elemvalue +'" class="disabed-css free-condition-css" onclick="removecondition(1, this);">' +
 				'<a>' +
 					'<span>公司:</span>' +
 					'<span class="lighting-color ml2">'+ elemvalue +'</span>' +
@@ -296,9 +362,9 @@ function addcondition(flag, _this) {  //选择条件
 		);
 
 	}else if(flag == "2"){
-
+ 
 		$('#free-condition-ul').append(
-			'<li name="'+ elemvalue +'" class="free-condition-css" onclick="removecondition(2, this);">' +
+			'<li name="'+ elemvalue +'" class="disabed-css free-condition-css" onclick="removecondition(2, this);">' +
 				'<a>' +
 					'<span>职位:</span>' +
 					'<span class="lighting-color ml2">'+ elemvalue +'</span>' +
@@ -310,7 +376,7 @@ function addcondition(flag, _this) {  //选择条件
 	}else if(flag == "3"){
 
 		$('#free-condition-ul').append(
-			'<li name="'+ elemvalue +'" class="free-condition-css" onclick="removecondition(3, this);">' +
+			'<li name="'+ elemvalue +'" class="disabed-css free-condition-css" onclick="removecondition(3, this);">' +
 				'<a>' +
 					'<span>领域:</span>' +
 					'<span class="lighting-color ml2">'+ elemvalue +'</span>' +
@@ -335,13 +401,13 @@ function removecondition(flag2, _this){  // 清除条件
 	var terms = [];
 	$(_this).remove();
 
-	if(flag2 == '1'){
+	/*if(flag2 == '1'){
 		$('#flagCompany').find('li:contains(' + removevalue +')').removeClass('hideblock');
 	}else if(flag2 == '2'){
 		$('#flagPosition').find('li:contains('+removevalue +')').removeClass('hideblock');
 	}else if(flag2 == '3'){
 		$('#flagSystem').find('li:contains('+ removevalue +')').removeClass('hideblock');
-	}
+	}*/
 
 	var selectedelem = $('#free-condition-ul').find('span.lighting-color');
 	for(var i=0; i<selectedelem.length; i++){
@@ -355,7 +421,16 @@ function removecondition(flag2, _this){  // 清除条件
 
 //点击“更多”
 function showmorecondition(){
-	
+	$('.more-show-css').click(function(){
+		var textvalue = $(this).text();
+		if(textvalue == '更多'){
+			$(this).prev().find('li.otherdisplay').removeClass('otherdisplay').addClass('movetoshow');
+			$(this).text('收起');
+		}else if(textvalue == '收起'){
+			$(this).prev().find('li.movetoshow').addClass('otherdisplay').removeClass('movetoshow');
+		    $(this).text('更多');
+		}	
+	});
 }
 
 

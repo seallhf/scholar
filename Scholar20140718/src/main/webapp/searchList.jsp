@@ -14,8 +14,6 @@
 <head>
 <link type="text/css" rel="stylesheet" href="<%=basePath%>css/base.css" />
 <link type="text/css" rel="stylesheet" href="<%=basePath%>css/index.css" />
-<script src="<%=basePath%>js/jquery-1.11.1.js" type="text/javascript"></script>
-<script src="<%=basePath%>js/pages.js" type="text/javascript"></script>
 <style type="text/css">
 .form-search-css form{float:right;}
 .search-input-type{border-top:3px solid #0072bf; border-bottom:3px solid #0072bf; border-left:3px solid #0072bf; border-right:0; width:461px; height:38px; color:#9fa1a3; padding-left:5px;}
@@ -27,7 +25,10 @@
 .mr5{margin-right:5px;}
 .inline-block-css{width:810px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .title-link-css:hover{cursor:pointer;}
+.otherdisplay{display:none;}
 </style>
+<script src="<%=basePath%>js/jquery-1.11.1.js" type="text/javascript"></script>
+<script src="<%=basePath%>js/pages.js" type="text/javascript"></script>
 <title><s:property value="query" /> 搜索结果</title>
 </head>
 <body>
@@ -75,18 +76,18 @@
 		<div class="conditions-search-css">
 			<div class="single-condition-css">
 				<div class="left">公司 :</div>
-				<ul id="flagCompany" class="selected-li inite-ul-css"></ul>
-				<div class="more-show-css">更多</div>
+				<ul id="flagCompany" class="selected-li more-ul-css"></ul>
+				<div class="more-show-css"></div>
 			</div>
 			<div class="single-condition-css">
 				<div class="left">职位 :</div>
-				<ul id="flagPosition" class="selected-li inite-ul-css"></ul>
-				<div class="more-show-css">更多</div>
+				<ul id="flagPosition" class="selected-li more-ul-css"></ul>
+				<div class="more-show-css"></div>
 			</div>
 			<div class="single-condition-css">
 				<div class="left">领域 :</div>
-				<ul id="flagSystem" class="selected-li inite-ul-css"></ul>
-				<div class="more-show-css">更多</div>
+				<ul id="flagSystem" class="selected-li more-ul-css"></ul>
+				<div class="more-show-css"></div>
 			</div>
 		</div>
 		<!-- end条件选择 -->
