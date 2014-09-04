@@ -91,6 +91,12 @@ public class MongoDao {
 				.findOne(o);
 		return object;
 	}
+	
+	public DBCursor findCursor(String tableName, String column) {
+		DBCursor sort = mongoClient.getDB(dbName).getCollection(tableName)
+				.find();		
+		return sort;
+	}
 
 	public Map<String, DBObject> find(String tableName, String column) {
 		Map<String, DBObject> result = new HashMap<String, DBObject>();

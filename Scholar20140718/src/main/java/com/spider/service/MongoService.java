@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.search.pojo.AuthorPage;
 import com.search.pojo.AuthorPaper;
@@ -47,6 +48,11 @@ public class MongoService {
 	public List<String> getAllAuthorId() {
 		return mongoDao.findIds(AUTHOR, "aid");
 	}
+	
+	public DBCursor getAllAuthorIdByCursor()
+	{
+		return mongoDao.findCursor(AUTHOR, "aid");
+	}
 
 	public Map<String, DBObject> getAllAuthorOld() {
 		return mongoDao.find("authors", "aid");
@@ -54,6 +60,11 @@ public class MongoService {
 
 	public Map<String, DBObject> getAllPaper() {
 		return mongoDao.find(PAPER, "pid");
+	}
+	
+	public DBCursor getAllPaperByCursor()
+	{
+		return mongoDao.findCursor(PAPER, "pid");
 	}
 
 	public Author findAuthor(String aid) {
