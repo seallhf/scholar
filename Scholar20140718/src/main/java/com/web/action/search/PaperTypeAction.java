@@ -1,5 +1,6 @@
 package com.web.action.search;
 
+import com.search.dao.MysqlDao;
 import com.search.pojo.AuthorPaper;
 import com.spider.service.MongoService;
 import com.utils.spring.SpringBeanFactory;
@@ -32,7 +33,10 @@ public class PaperTypeAction extends BaseAction{
 	{
 		MongoService mongo = (MongoService) SpringBeanFactory
 				.getBean("mongoService");
-		authorPaper = mongo.findAuthorPaper(aid);
+		MysqlDao dao = (MysqlDao) SpringBeanFactory
+				.getBean("mysqlDao");
+//		authorPaper = dao.findAuthorPaper(aid);
+		authorPaper= mongo.findAuthorPaper(aid);
 		return SUCCESS;
 	}
 	

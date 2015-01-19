@@ -9,13 +9,15 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<org.springframework.version>4.0.5.RELEASE</org.springframework.version>
-		<!--<org.springframework.version>3.2.2.RELEASE</org.springframework.version>-->
+		<!--<org.springframework.version>3.2.2.RELEASE</org.springframework.version> -->
 		<struts.version>2.3.4</struts.version>
 		<aspectj.version>1.6.9</aspectj.version>
 		<slf4j.version>1.6.4</slf4j.version>
 		<cxf.version>3.0.0-milestone1</cxf.version>
 		<servlet.version>3.0.1</servlet.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.deploy>deploy</project.deploy>
+		<project.tomcat.version>8.0.0-RC5</project.tomcat.version>
 	</properties>
 
 	<dependencies>
@@ -250,11 +252,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.28</version>
 		</dependency>
-				
+
 	</dependencies>
 	<build>
 		<defaultGoal>compile</defaultGoal>
-		<finalName>Scholar</finalName>
+		<finalName>scholar</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -268,7 +270,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.0.2</version>
 			</plugin>
 		</plugins>
 	</build>

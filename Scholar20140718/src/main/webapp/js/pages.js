@@ -22,7 +22,7 @@ function addAuthorPaper() {
 										async : false,
 										dataType : "json", // 接受数据格式
 										error : function() {
-											alert("服务器没有返回数据，可能服务器忙，请重试");
+											//alert("authorPaper服务器没有返回数据，可能服务器忙，请重试");
 										},
 										success : function(json) {
 											html = "<span class=\"work-num-icon\"></span>"
@@ -52,7 +52,7 @@ function addAuthorPaper() {
 											      + "</label>"
 											      +"]"
 										}
-									});
+									});							
 							$(this).html(html);
 						}
 					});
@@ -75,7 +75,7 @@ function addCoAuthorDetails() {
 										async : false,
 										dataType : "json", // 接受数据格式
 										error : function() {
-											alert("服务器没有返回数据，可能服务器忙，请重试");
+											//alert("coAuthor服务器没有返回数据，可能服务器忙，请重试");
 										},
 										success : function(json) {
 											html = "<span class=\"con-user-icon\"></span>"
@@ -113,7 +113,7 @@ function addFarmousPaperDetails() {
 										async : false,
 										dataType : "json", // 接受数据格式
 										error : function() {
-											alert("服务器没有返回数据，可能服务器忙，请重试");
+											//alert("famousPaper服务器没有返回数据，可能服务器忙，请重试");
 										},
 										success : function(json) {
 											var titlevalue = json["title"];
@@ -169,7 +169,7 @@ function addAttributeHeader() {
 		async : false,
 		dataType : "json", // 接受数据格式
 		error : function() {
-			alert("服务器没有返回数据，可能服务器忙，请重试");
+			//alert("classification服务器没有返回数据，可能服务器忙，请重试");
 		},
 		success : function(json) {
 			var comarray = json["company"];

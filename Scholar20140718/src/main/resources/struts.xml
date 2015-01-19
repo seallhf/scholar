@@ -14,6 +14,27 @@
 			<result name="success">/searchList.jsp</result>
 			<result name="error">/error.jsp</result>
 		</action>
+		
+		<action name="searchTag" class="com.web.action.search.TagSearchAction"
+			method="searchService">
+			<result type="json">
+				<param name="root">list</param>
+			</result>
+		</action>
+		
+		<action name="searchCV" class="com.web.action.search.TagSearchAction"
+			method="searchCV">
+			<result type="json">
+				<param name="root">CV</param>
+			</result>
+		</action>
+		
+		<action name="searchTagCounts" class="com.web.action.search.TagSearchAction"
+			method="searchServiceGetCounts">
+			<result type="json">
+				<param name="root">allcounts</param>
+			</result>
+		</action>
 
 		<action name="paperType" class="com.web.action.search.PaperTypeAction"
 			method="json">

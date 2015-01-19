@@ -17,8 +17,10 @@ import org.elasticsearch.search.SearchHit;
 import org.springframework.stereotype.Service;
 
 import com.search.dao.ElasticSearchDao;
+import com.search.dao.MysqlDao;
 import com.search.pojo.AuthorPage;
 import com.spider.service.MongoService;
+import com.utils.spring.SpringBeanFactory;
 
 @Service
 public class SearchService {
@@ -115,8 +117,11 @@ public class SearchService {
 			response = esDao.findReScoreWithFilterByTerm(query, termFields,
 					(start - 1) * length, length);
 		allcounts = response.getHits().totalHits();
+		MysqlDao dao = (MysqlDao) SpringBeanFactory
+				.getBean("mysqlDao");
 		for (SearchHit sh : response.getHits()) {
 			String id = (String) sh.getSource().get("aid");
+//			AuthorPage authorPage = dao.findAuthorPage(id);
 			AuthorPage authorPage = mongoService.findAuthorPage(id);
 			list.add(authorPage);
 		}
